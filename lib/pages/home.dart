@@ -127,7 +127,32 @@ class _HomePageState extends State<HomePage> {
                 ),
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                children: [],
+                children: [
+                  _buildBentoCard(
+                    'HUMIDITY',
+                    '64%',
+                    'The dew point is 12° right now.',
+                    Icons.water_drop_outlined,
+                  ),
+                  _buildBentoCard(
+                    'WIND',
+                    '12 km/h',
+                    'Direction: West-Northwest',
+                    Icons.air,
+                  ),
+                  _buildBentoCard(
+                    'FEELS LIKE',
+                    '17°',
+                    'Similar to the actual temperature.',
+                    Icons.thermostat,
+                  ),
+                  _buildBentoCard(
+                    'VISIBILITY',
+                    '10 km',
+                    'It\'s perfectly clear right now.',
+                    Icons.visibility,
+                  ),
+                ],
               ),
             ),
           ],
@@ -137,14 +162,46 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-Widget _buildGridCard(
+Widget _buildBentoCard(
   String title,
   String value,
   String description,
   IconData icon,
 ) {
   return Container(
-    padding: const EdgeInsets.all(16.0),
-    decoration: BoxDecoration(),
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: const Color(0xFFF2F3FC),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 25, color: Colors.black54),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          description,
+          style: const TextStyle(fontSize: 10, color: Colors.black54),
+          maxLines: 2,
+        ),
+      ],
+    ),
   );
 }
