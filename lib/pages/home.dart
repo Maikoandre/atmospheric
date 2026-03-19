@@ -210,8 +210,76 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 32.0),
-                
+                SizedBox(height: 24.0),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(24.0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF2F3FC),
+                      borderRadius: BorderRadius.circular(32.0),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.calendar_month,
+                              size: 18,
+                              color: Colors.black,
+                            ),
+                            const SizedBox(width: 8.0),
+                            Text(
+                              '7-Day Forecast',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black.withValues(alpha: 0.5),
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Divider(height: 32, color: Colors.black12),
+                        _buildDailyCard(
+                          'Today',
+                          Icons.wb_cloudy,
+                          14,
+                          22,
+                          0.4,
+                          0.9,
+                        ),
+                        _buildDailyCard(
+                          'Tue',
+                          Icons.wb_sunny,
+                          15,
+                          24,
+                          0.5,
+                          1.0,
+                        ),
+                        _buildDailyCard(
+                          'Wed',
+                          Icons.umbrella,
+                          12,
+                          18,
+                          0.1,
+                          0.5,
+                        ),
+                        _buildDailyCard('Thu', Icons.cloud, 13, 19, 0.3, 0.7),
+                        _buildDailyCard(
+                          'Fri',
+                          Icons.wb_cloudy_outlined,
+                          14,
+                          21,
+                          0.4,
+                          0.8,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ],
@@ -275,9 +343,9 @@ Widget _buildHourlyCard(String time, IconData icon, String temp) {
       border: Border.all(color: Colors.black),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           blurRadius: 6,
-          offset: const Offset(0, 2),
+          offset: const Offset(0, 0),
         ),
       ],
     ),
@@ -304,6 +372,75 @@ Widget _buildHourlyCard(String time, IconData icon, String temp) {
           ),
         ),
         SizedBox(height: 10),
+      ],
+    ),
+  );
+}
+
+Widget _buildDailyCard(
+  String day,
+  IconData icon,
+  int low,
+  int high,
+  double start,
+  double end,
+) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SizedBox(
+          width: 50,
+          child: Text(
+            day,
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+        ),
+        Icon(icon, color: Color(0xFF005DAC)),
+        Row(
+          children: [
+            Text(
+              '$low°',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              width: 60,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 60 * start,
+                    right: 60 * (1 - end),
+                    child: Container(
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Color(0xFF005DAC),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 8),
+            Text(
+              '$high°',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
       ],
     ),
   );
