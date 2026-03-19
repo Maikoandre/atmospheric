@@ -252,13 +252,68 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 32.0),
               ],
             ),
           ],
         ),
       ),
+      
+      bottomNavigationBar: Container(
+        height: 70,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.9),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(32.0),
+            topRight: Radius.circular(32.0),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF005DAC).withValues(alpha: 0.06),
+              blurRadius: 24,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(Icons.home, "Home", isActive: true),
+              _buildNavItem(Icons.location_on_outlined, "Locations"),
+              _buildNavItem(Icons.search, "Search"),
+              _buildNavItem(Icons.settings_outlined, "Settings"),
+            ],
+          ),
+        ),
+      ),
     );
   }
+}
+
+Widget _buildNavItem(IconData icon, String label, {isActive = false}) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        decoration: BoxDecoration(
+          color: isActive ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Icon(icon, color: isActive ? Colors.blueAccent : Colors.black54),
+      ),
+      const SizedBox(height: 4),
+      Text(
+        label,
+        style: TextStyle(
+          fontSize: 11,
+          color: isActive ? Colors.blueAccent : Colors.black54,
+          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+    ],
+  );
 }
 
 Widget _buildBentoCard(
