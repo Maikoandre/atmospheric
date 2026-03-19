@@ -1,5 +1,5 @@
+import 'package:atmospheric/components/app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:atmospheric/pages/settings.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,35 +12,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white.withAlpha(200),
-        leading: IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.menu, color: Colors.blueAccent),
-        ),
-        title: const Text(
-          'Atmospheric',
-          style: TextStyle(
-            color: Colors.blueAccent,
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsPage()),
-              );
-            },
-            icon: Icon(Icons.settings, color: Colors.blueAccent),
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -397,7 +369,7 @@ Widget _buildDailyCard(
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
           ),
         ),
-        Icon(icon, color: Color(0xFF005DAC)),
+        Icon(icon, color: Colors.blue),
         Row(
           children: [
             Text(
