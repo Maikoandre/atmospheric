@@ -5,6 +5,7 @@ import 'package:atmospheric/pages/location.dart';
 import 'package:atmospheric/pages/search.dart';
 import 'package:atmospheric/pages/settings.dart';
 import 'package:atmospheric/services/weather_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,34 +16,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String apiKey = dotenv.env['API_KEY'] ?? '';
+
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const DashboardView(),
+  List<Widget> get _pages => [
+    DashboardView(weather: _weather),
     const LocationPage(),
     const SearchPage(),
     const SettingsPage(),
   ];
 
-  final _weatherService = WeatherService('');
+  final _weatherService = WeatherService(dotenv.env['API_KEY'] ?? '');
   Weather? _weather;
 
   Future<void> _fetchWeather() async {
     String cityName = await _weatherService.getCurrentCity();
-    try{
+    try {
       final weather = await _weatherService.getWeather(cityName);
       setState(() {
         _weather = weather;
       });
-    }
-    catch (e){
+    } catch (e) {
       // ignore: avoid_print
       print(e);
     }
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _fetchWeather();
   }
@@ -222,7 +224,8 @@ Widget _buildDailyCard(
 }
 
 class DashboardView extends StatelessWidget {
-  const DashboardView({super.key});
+  final Weather? weather;
+  const DashboardView({super.key, this.weather});
 
   @override
   Widget build(BuildContext context) {
@@ -254,8 +257,8 @@ class DashboardView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _weather.cityName,
-                    style: TextStyle(
+                    weather?.cityName ?? 'Loading...',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -264,9 +267,11 @@ class DashboardView extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        '19°',
-                        style: TextStyle(
+                      Text(
+                        weather != null
+                            ? '${weather!.temperature.round()}°'
+                            : '--°',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 72,
                           fontWeight: FontWeight.bold,
@@ -280,9 +285,9 @@ class DashboardView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const Text(
-                    'Cloudy',
-                    style: TextStyle(
+                  Text(
+                    weather?.mainCondition ?? '--',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
