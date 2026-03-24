@@ -18,6 +18,15 @@ class _MainState extends State<Main> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      builder: (context, child) {
+        return ScrollConfiguration(
+          behavior: const ScrollBehavior().copyWith(
+            overscroll: false, // Desativa o efeito de overscroll
+            scrollbars: false, // Desativa as barras de rolagem
+          ),
+          child: child!,
+        );
+      },
       home: const HomePage(),
     );
   }

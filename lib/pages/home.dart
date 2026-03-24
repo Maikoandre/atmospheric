@@ -1,4 +1,7 @@
 import 'package:atmospheric/components/app_bar.dart';
+import 'package:atmospheric/pages/location.dart';
+import 'package:atmospheric/pages/search.dart';
+import 'package:atmospheric/pages/settings.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,311 +12,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(32.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(32.0),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Colors.blueAccent, Colors.lightBlue],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blueAccent.withValues(alpha: 0.15),
-                      blurRadius: 32,
-                      offset: const Offset(0, 16),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'São Francisco, CA',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          '19°',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 72,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: -2,
-                          ),
-                        ),
-                        Icon(
-                          Icons.wb_cloudy_outlined,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          size: 80,
-                        ),
-                      ],
-                    ),
-                    const Text(
-                      'Cloudy',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    const Text(
-                      'H: 22°  L: 14°',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: GridView(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 16.0,
-                  crossAxisSpacing: 16.0,
-                  childAspectRatio: 1.1,
-                ),
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                children: [
-                  _buildBentoCard(
-                    'HUMIDITY',
-                    '64%',
-                    'The dew point is 12° right now.',
-                    Icons.water_drop_outlined,
-                  ),
-                  _buildBentoCard(
-                    'WIND',
-                    '12 km/h',
-                    'Direction: West-Northwest',
-                    Icons.air,
-                  ),
-                  _buildBentoCard(
-                    'FEELS LIKE',
-                    '17°',
-                    'Similar to the actual temperature.',
-                    Icons.thermostat,
-                  ),
-                  _buildBentoCard(
-                    'VISIBILITY',
-                    '10 km',
-                    'It\'s perfectly clear right now.',
-                    Icons.visibility,
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 16.0),
-
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Hourly Forecast',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Text(
-                          'Next 24h',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                SizedBox(
-                  height: 140,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    children: [
-                      _buildHourlyCard('Now', Icons.wb_cloudy, '19°'),
-                      _buildHourlyCard('1PM', Icons.wb_sunny, '21°'),
-                      _buildHourlyCard('2PM', Icons.wb_sunny, '22°'),
-                      _buildHourlyCard('3PM', Icons.wb_sunny, '22°'),
-                      _buildHourlyCard('4PM', Icons.wb_cloudy, '20°'),
-                      _buildHourlyCard('5PM', Icons.wb_cloudy, '19°'),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 24.0),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(24.0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF2F3FC),
-                      borderRadius: BorderRadius.circular(32.0),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.calendar_month,
-                              size: 18,
-                              color: Colors.black,
-                            ),
-                            const SizedBox(width: 8.0),
-                            Text(
-                              '7-Day Forecast',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black.withValues(alpha: 0.5),
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Divider(height: 32, color: Colors.black12),
-                        _buildDailyCard(
-                          'Today',
-                          Icons.wb_cloudy,
-                          14,
-                          22,
-                          0.4,
-                          0.9,
-                        ),
-                        _buildDailyCard(
-                          'Tue',
-                          Icons.wb_sunny,
-                          15,
-                          24,
-                          0.5,
-                          1.0,
-                        ),
-                        _buildDailyCard(
-                          'Wed',
-                          Icons.umbrella,
-                          12,
-                          18,
-                          0.1,
-                          0.5,
-                        ),
-                        _buildDailyCard('Thu', Icons.cloud, 13, 19, 0.3, 0.7),
-                        _buildDailyCard(
-                          'Fri',
-                          Icons.wb_cloudy_outlined,
-                          14,
-                          21,
-                          0.4,
-                          0.8,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32.0),
-              ],
-            ),
-          ],
-        ),
-      ),
-      
-      bottomNavigationBar: Container(
-        height: 70,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.9),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(32.0),
-            topRight: Radius.circular(32.0),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF005DAC).withValues(alpha: 0.06),
-              blurRadius: 24,
-              offset: const Offset(0, -4),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.home, "Home", isActive: true),
-              _buildNavItem(Icons.location_on_outlined, "Locations"),
-              _buildNavItem(Icons.search, "Search"),
-              _buildNavItem(Icons.settings_outlined, "Settings"),
-            ],
-          ),
-        ),
-      ),
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: 
     );
   }
-}
-
-Widget _buildNavItem(IconData icon, String label, {isActive = false}) {
-  return Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        decoration: BoxDecoration(
-          color: isActive ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Icon(icon, color: isActive ? Colors.blueAccent : Colors.black54),
-      ),
-      const SizedBox(height: 4),
-      Text(
-        label,
-        style: TextStyle(
-          fontSize: 11,
-          color: isActive ? Colors.blueAccent : Colors.black54,
-          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-        ),
-      ),
-    ],
-  );
 }
 
 Widget _buildBentoCard(
@@ -471,4 +181,244 @@ Widget _buildDailyCard(
       ],
     ),
   );
+}
+
+class DashboardView extends StatelessWidget {
+  const DashboardView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      physics: const ClampingScrollPhysics(),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(32.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(32.0),
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Colors.blueAccent, Colors.lightBlue],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blueAccent.withValues(alpha: 0.15),
+                    blurRadius: 32,
+                    offset: const Offset(0, 16),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'São Francisco, CA',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        '19°',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 72,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: -2,
+                        ),
+                      ),
+                      Icon(
+                        Icons.wb_cloudy_outlined,
+                        color: Colors.white.withValues(alpha: 0.9),
+                        size: 80,
+                      ),
+                    ],
+                  ),
+                  const Text(
+                    'Cloudy',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  const Text(
+                    'H: 22°  L: 14°',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: GridView(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16.0,
+                crossAxisSpacing: 16.0,
+                childAspectRatio: 1.1,
+              ),
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                _buildBentoCard(
+                  'HUMIDITY',
+                  '64%',
+                  'The dew point is 12° right now.',
+                  Icons.water_drop_outlined,
+                ),
+                _buildBentoCard(
+                  'WIND',
+                  '12 km/h',
+                  'Direction: West-Northwest',
+                  Icons.air,
+                ),
+                _buildBentoCard(
+                  'FEELS LIKE',
+                  '17°',
+                  'Similar to the actual temperature.',
+                  Icons.thermostat,
+                ),
+                _buildBentoCard(
+                  'VISIBILITY',
+                  '10 km',
+                  'It\'s perfectly clear right now.',
+                  Icons.visibility,
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16.0),
+
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Hourly Forecast',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.blueAccent,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        'Next 24h',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              SizedBox(
+                height: 140,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  children: [
+                    _buildHourlyCard('Now', Icons.wb_cloudy, '19°'),
+                    _buildHourlyCard('1PM', Icons.wb_sunny, '21°'),
+                    _buildHourlyCard('2PM', Icons.wb_sunny, '22°'),
+                    _buildHourlyCard('3PM', Icons.wb_sunny, '22°'),
+                    _buildHourlyCard('4PM', Icons.wb_cloudy, '20°'),
+                    _buildHourlyCard('5PM', Icons.wb_cloudy, '19°'),
+                  ],
+                ),
+              ),
+              SizedBox(height: 24.0),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Container(
+                  padding: const EdgeInsets.all(24.0),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF2F3FC),
+                    borderRadius: BorderRadius.circular(32.0),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.calendar_month,
+                            size: 18,
+                            color: Colors.black,
+                          ),
+                          const SizedBox(width: 8.0),
+                          Text(
+                            '7-Day Forecast',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black.withValues(alpha: 0.5),
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(height: 32, color: Colors.black12),
+                      _buildDailyCard(
+                        'Today',
+                        Icons.wb_cloudy,
+                        14,
+                        22,
+                        0.4,
+                        0.9,
+                      ),
+                      _buildDailyCard('Tue', Icons.wb_sunny, 15, 24, 0.5, 1.0),
+                      _buildDailyCard('Wed', Icons.umbrella, 12, 18, 0.1, 0.5),
+                      _buildDailyCard('Thu', Icons.cloud, 13, 19, 0.3, 0.7),
+                      _buildDailyCard(
+                        'Fri',
+                        Icons.wb_cloudy_outlined,
+                        14,
+                        21,
+                        0.4,
+                        0.8,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32.0),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
