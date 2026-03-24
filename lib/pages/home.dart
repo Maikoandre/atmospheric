@@ -253,8 +253,8 @@ class DashboardView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    '$_weather.cityName",
+                  Text(
+                    _weather.cityName,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
