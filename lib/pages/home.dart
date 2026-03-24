@@ -1,11 +1,14 @@
 import 'package:atmospheric/components/app_bar.dart';
 import 'package:atmospheric/components/nav_bar.dart';
+import 'package:atmospheric/models/weather.dart';
 import 'package:atmospheric/pages/location.dart';
 import 'package:atmospheric/pages/search.dart';
 import 'package:atmospheric/pages/settings.dart';
+import 'package:atmospheric/services/weather_service.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -20,6 +23,29 @@ class _HomePageState extends State<HomePage> {
     const SearchPage(),
     const SettingsPage(),
   ];
+
+  final _weatherService = WeatherService('');
+  Weather? _weather;
+
+  Future<void> _fetchWeather() async {
+    String cityName = await _weatherService.getCurrentCity();
+    try{
+      final weather = await _weatherService.getWeather(cityName);
+      setState(() {
+        _weather = weather;
+      });
+    }
+    catch (e){
+      // ignore: avoid_print
+      print(e);
+    }
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    _fetchWeather();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +254,7 @@ class DashboardView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'São Francisco, CA',
+                    '$_weather.cityName",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,

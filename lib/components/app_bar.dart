@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:atmospheric/pages/settings.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
