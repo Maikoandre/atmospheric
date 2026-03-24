@@ -27,7 +27,7 @@ class _MainState extends State<Main> {
           child: child!,
         );
       },
-      home: const HomePage(),
+      home: HomePage(),
     );
   }
 }

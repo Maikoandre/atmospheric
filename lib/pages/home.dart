@@ -1,27 +1,39 @@
 import 'package:atmospheric/components/app_bar.dart';
+import 'package:atmospheric/components/nav_bar.dart';
 import 'package:atmospheric/pages/location.dart';
 import 'package:atmospheric/pages/search.dart';
 import 'package:atmospheric/pages/settings.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
 
-
-  
+  final List<Widget> _pages = [
+    const DashboardView(),
+    const LocationPage(),
+    const SearchPage(),
+    const SettingsPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(),
       body: _pages[_selectedIndex],
-      bottomNavigationBar: 
+      bottomNavigationBar: CustomNavbar(
+        selectedIndex: _selectedIndex,
+        onItemSelected: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
     );
   }
 }

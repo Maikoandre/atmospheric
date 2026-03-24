@@ -31,17 +31,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
         ),
       ),
       centerTitle: true,
-      actions: [
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SettingsPage()),
-            );
-          },
-          icon: Icon(Icons.settings, color: Colors.blueAccent),
-        ),
-      ],
     );
   }
 }

@@ -1,29 +1,21 @@
-import 'package:atmospheric/pages/home.dart';
-import 'package:atmospheric/pages/location.dart';
-import 'package:atmospheric/pages/search.dart';
-import 'package:atmospheric/pages/settings.dart';
 import 'package:flutter/material.dart';
 
 class CustomNavbar extends StatelessWidget {
-  CustomNavbar({super.key});
+  final int selectedIndex;
+  final ValueChanged<int> onItemSelected;
 
-    int _selectedIndex = 0;
-
-  final List<Widget> _pages = [
-    const DashboardView(),
-    const LocationPage(),
-    const SearchPage(),
-    const SettingsPage(),
-  ];
+  const CustomNavbar({
+    super.key,
+    required this.selectedIndex,
+    required this.onItemSelected,
+  });
 
   Widget _buildNavItem(IconData icon, String label, int index) {
-    bool isActive = _selectedIndex == index;
+    bool isActive = selectedIndex == index;
 
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
+        onItemSelected(index);
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
