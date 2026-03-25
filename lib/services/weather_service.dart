@@ -13,14 +13,22 @@ class WeatherService {
   WeatherService(this.apiKey);
 
   Future<Weather> getWeather(String cityName) async {
+    if (cityName.isEmpty) {
+      throw Exception(
+        'Nome da cidade está vazio. Verifique as permissões de GPS.',
+      );
+    }
+
     final response = await http.get(
-      Uri.parse('$BASE_URL?q=$cityName&APPID=$apiKey&units=metrics'),
+      Uri.parse('$BASE_URL?q=$cityName&appid=$apiKey&units=metric'),
     );
 
     if (response.statusCode == 200) {
       return Weather.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to load weather data!');
+      // Isso vai mostrar no terminal se é erro 401 (chave), 404 (cidade) ou outro.
+      print("Erro da API: ${response.statusCode} - ${response.body}");
+      throw Exception('Failed to load weather data');
     }
   }
 
@@ -50,11 +58,22 @@ class WeatherService {
 
     if (placemarks.isEmpty) return "";
 
+    print("Coordenadas: ${position.latitude}, ${position.longitude}");
+    print("Placemark encontrado: ${placemarks.first.toString()}");
+
+    // lib/services/weather_service.dart
+
+    // ... dentro do método getCurrentCity()
     final place = placemarks.first;
 
-    return place.locality ??
-        place.subAdministrativeArea ??
-        place.administrativeArea ??
-        "";
+    // Tenta obter o nome da cidade seguindo uma hierarquia de campos
+    String? city =
+        place
+            .subAdministrativeArea ?? // Geralmente contém o município (ex: Guanambi)
+        place.locality ?? // Cidade principal
+        place.subLocality ?? // Distrito ou bairro (ex: Ceraíma)
+        place.administrativeArea; // Estado (em último caso)
+
+    return city ?? "";
   }
 }

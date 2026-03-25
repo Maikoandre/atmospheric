@@ -37,9 +37,9 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _weather = weather;
       });
-    } catch (e) {
-      // ignore: avoid_print
-      print(e);
+    } // lib/pages/home.dart
+    catch (e) {
+      print("ERRO DETALHADO: $e"); // Isso mostrará o motivo real no terminal
     }
   }
 
