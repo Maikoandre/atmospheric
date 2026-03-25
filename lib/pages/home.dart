@@ -279,9 +279,9 @@ class DashboardView extends StatelessWidget {
                         ),
                       ),
                       Icon(
-                        Icons.wb_cloudy_outlined,
+                        Icons.wb_cloudy_rounded,
                         color: Colors.white.withValues(alpha: 0.9),
-                        size: 80,
+                        size: 100,
                       ),
                     ],
                   ),
