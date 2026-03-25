@@ -294,14 +294,14 @@ class DashboardView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8.0),
-                  const Text(
-                    'H: 22°  L: 14°',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  // const Text(
+                  //   'H: 22°  L: 14°',
+                  //   style: TextStyle(
+                  //     color: Colors.white,
+                  //     fontSize: 14,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -321,21 +321,21 @@ class DashboardView extends StatelessWidget {
               children: [
                 _buildBentoCard(
                   'HUMIDITY',
-                  '64%',
-                  'The dew point is 12° right now.',
+                  weather != null ? '${weather!.humidity}%' : '--%',
+                  'Current relative humidity',
                   Icons.water_drop_outlined,
                 ),
                 _buildBentoCard(
                   'WIND',
-                  '12 km/h',
-                  'Direction: West-Northwest',
+                  weather != null ? '${weather!.windSpeed} km/h' : '-- km/h',
+                  'Current wind speed',
                   Icons.air,
                 ),
                 _buildBentoCard(
-                  'FEELS LIKE',
-                  '17°',
-                  'Similar to the actual temperature.',
-                  Icons.thermostat,
+                  'PRESSURE',
+                  weather != null ? '${weather!.pressure} hPa' : '-- hPa',
+                  'Atmospheric pressure',
+                  Icons.speed,
                 ),
                 _buildBentoCard(
                   'VISIBILITY',
