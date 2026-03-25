@@ -339,8 +339,8 @@ class DashboardView extends StatelessWidget {
                 ),
                 _buildBentoCard(
                   'VISIBILITY',
-                  '10 km',
-                  'It\'s perfectly clear right now.',
+                  weather != null ? "${(weather!.visibility / 1000).toStringAsFixed(0)} km" : '-- km',
+                  'Current visibility',
                   Icons.visibility,
                 ),
               ],
