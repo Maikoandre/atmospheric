@@ -66,6 +66,33 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+String _formatTime(int dt) {
+  final time = DateTime.fromMillisecondsSinceEpoch(dt * 1000);
+  int hour = time.hour;
+  String period = hour >= 12 ? 'PM' : 'AM';
+  hour = hour % 12;
+  if (hour == 0) hour = 12;
+  return '$hour$period';
+}
+
+IconData _getWeatherIcon(String mainCondition) {
+  switch (mainCondition.toLowerCase()) {
+    case 'clear':
+      return Icons.wb_sunny;
+    case 'clouds':
+      return Icons.wb_cloudy;
+    case 'rain':
+    case 'drizzle':
+      return Icons.umbrella;
+    case 'thunderstorm':
+      return Icons.flash_on;
+    case 'snow':
+      return Icons.ac_unit;
+    default:
+      return Icons.cloud;
+  }
+}
+
 Widget _buildBentoCard(
   String title,
   String value,
@@ -388,18 +415,28 @@ class DashboardView extends StatelessWidget {
               const SizedBox(height: 16.0),
               SizedBox(
                 height: 140,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  children: [
-                    _buildHourlyCard('Now', Icons.wb_cloudy, '19°'),
-                    _buildHourlyCard('1PM', Icons.wb_sunny, '21°'),
-                    _buildHourlyCard('2PM', Icons.wb_sunny, '22°'),
-                    _buildHourlyCard('3PM', Icons.wb_sunny, '22°'),
-                    _buildHourlyCard('4PM', Icons.wb_cloudy, '20°'),
-                    _buildHourlyCard('5PM', Icons.wb_cloudy, '19°'),
-                  ],
-                ),
+                child: weather?.hourly != null && weather!.hourly.isNotEmpty
+                    ? ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        itemCount: weather!.hourly.length > 24 ? 24 : weather!.hourly.length,
+                        itemBuilder: (context, index) {
+                          HourlyForecast forecast = weather!.hourly[index];
+                          String timeStr = index == 0 ? 'Now' : _formatTime(forecast.dt);
+                          return _buildHourlyCard(
+                            timeStr, 
+                            _getWeatherIcon(forecast.mainCondition), 
+                            '${forecast.temp.round()}°'
+                          );
+                        },
+                      )
+                    : ListView(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        children: [
+                          _buildHourlyCard('Now', Icons.wb_cloudy, '--°'),
+                        ],
+                      ),
               ),
               SizedBox(height: 24.0),
 

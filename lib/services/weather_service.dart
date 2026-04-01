@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class WeatherService {
   // ignore: constant_identifier_names
-  static const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
+  static const BASE_URL = "https://api.openweathermap.org/data/2.5";
   final String apiKey;
 
   WeatherService(this.apiKey);
@@ -19,15 +19,31 @@ class WeatherService {
       );
     }
 
-    final response = await http.get(
-      Uri.parse('$BASE_URL?q=$cityName&appid=$apiKey&units=metric'),
+    List<Location> locations = await locationFromAddress(cityName);
+    if (locations.isEmpty) {
+      throw Exception('Could not find location for city: $cityName');
+    }
+    
+    double lat = locations.first.latitude;
+    double lon = locations.first.longitude;
+
+    final weatherResponse = await http.get(
+      Uri.parse('$BASE_URL/weather?lat=$lat&lon=$lon&appid=$apiKey&units=metric'),
     );
 
-    if (response.statusCode == 200) {
-      return Weather.fromJson(jsonDecode(response.body));
+    final forecastResponse = await http.get(
+      Uri.parse('$BASE_URL/forecast?lat=$lat&lon=$lon&appid=$apiKey&units=metric'),
+    );
+
+    if (weatherResponse.statusCode == 200 && forecastResponse.statusCode == 200) {
+      final weatherJson = jsonDecode(weatherResponse.body);
+      final forecastJson = jsonDecode(forecastResponse.body);
+      weatherJson['hourly'] = forecastJson['list']; // Inject standard forecast list for the model mapped hourly field
+      return Weather.fromJson(weatherJson, cityName: cityName);
     } else {
       // Isso vai mostrar no terminal se é erro 401 (chave), 404 (cidade) ou outro.
-      print("Erro da API: ${response.statusCode} - ${response.body}");
+      print("Erro da API Current: ${weatherResponse.statusCode} - ${weatherResponse.body}");
+      print("Erro da API Forecast: ${forecastResponse.statusCode} - ${forecastResponse.body}");
       throw Exception('Failed to load weather data');
     }
   }
