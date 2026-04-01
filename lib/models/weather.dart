@@ -17,15 +17,15 @@ class Weather {
     required this.visibility,
   });
 
-  factory Weather.fromJson(Map<String, dynamic> json){
-    return Weather( 
-      cityName: json['name'] ?? '', 
-      temperature: json['main']['temp']?.toDouble() ?? 0.0, 
-      mainCondition: json['weather'][0]['main'] ?? '',
-      humidity: json['main']['humidity']?.toInt() ?? 0,
-      windSpeed: json['wind']['speed']?.toDouble() ?? 0.0,
-      pressure: json['main']['pressure']?.toInt() ?? 0,
-      visibility: json['visibility'].toInt() ?? 0,
+  factory Weather.fromJson(Map<String, dynamic> json, {String cityName = ''}) {
+    return Weather(
+      cityName: cityName,
+      temperature: json['current']['temp']?.toDouble() ?? 0.0,
+      mainCondition: json['current']['weather'][0]['main'] ?? '',
+      humidity: json['current']['humidity']?.toInt() ?? 0,
+      windSpeed: json['current']['wind_speed']?.toDouble() ?? 0.0,
+      pressure: json['current']['pressure']?.toInt() ?? 0,
+      visibility: json['current']['visibility']?.toInt() ?? 0,
     );
   }
 }

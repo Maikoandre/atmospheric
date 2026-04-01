@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
       });
     } // lib/pages/home.dart
     catch (e) {
-      print("ERRO DETALHADO: $e"); // Isso mostrará o motivo real no terminal
+      print("ERRO DETALHADO: $e"); 
     }
   }
 

@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class WeatherService {
   // ignore: constant_identifier_names
-  static const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
+  static const BASE_URL = "https://api.openweathermap.org/data/3.0/onecall";
   final String apiKey;
 
   WeatherService(this.apiKey);
@@ -19,12 +19,20 @@ class WeatherService {
       );
     }
 
+    List<Location> locations = await locationFromAddress(cityName);
+    if (locations.isEmpty) {
+      throw Exception('Could not find location for city: $cityName');
+    }
+    
+    double lat = locations.first.latitude;
+    double lon = locations.first.longitude;
+
     final response = await http.get(
-      Uri.parse('$BASE_URL?q=$cityName&appid=$apiKey&units=metric'),
+      Uri.parse('$BASE_URL?lat=$lat&lon=$lon&exclude=minutely,alerts&appid=$apiKey&units=metric'),
     );
 
     if (response.statusCode == 200) {
-      return Weather.fromJson(jsonDecode(response.body));
+      return Weather.fromJson(jsonDecode(response.body), cityName: cityName);
     } else {
       // Isso vai mostrar no terminal se é erro 401 (chave), 404 (cidade) ou outro.
       print("Erro da API: ${response.statusCode} - ${response.body}");
