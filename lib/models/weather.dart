@@ -1,3 +1,19 @@
+class DailyForecast {
+  final int dt;
+  final double minTemp;
+  final double maxTemp;
+  final String mainCondition;
+  final String icon;
+
+  DailyForecast({
+    required this.dt,
+    required this.minTemp,
+    required this.maxTemp,
+    required this.mainCondition,
+    required this.icon,
+  });
+}
+
 class HourlyForecast {
   final int dt;
   final double temp;
@@ -30,6 +46,7 @@ class Weather {
   final int pressure;
   final int visibility;
   final List<HourlyForecast> hourly;
+  final List<DailyForecast> daily;
 
   Weather({
     required this.cityName,
@@ -40,6 +57,7 @@ class Weather {
     required this.pressure,
     required this.visibility,
     this.hourly = const [],
+    this.daily = const [],
   });
 
   factory Weather.fromJson(Map<String, dynamic> json, {String cityName = ''}) {
@@ -47,6 +65,32 @@ class Weather {
     if (json['hourly'] != null) {
       hourlyList = (json['hourly'] as List).map((i) => HourlyForecast.fromJson(i)).toList();
     }
+
+    List<DailyForecast> dailyList = [];
+    Map<String, List<HourlyForecast>> groupedByDay = {};
+    for (var forecast in hourlyList) {
+      DateTime dt = DateTime.fromMillisecondsSinceEpoch(forecast.dt * 1000);
+      String dayKey = '${dt.year}-${dt.month}-${dt.day}';
+      groupedByDay.putIfAbsent(dayKey, () => []).add(forecast);
+    }
+    
+    groupedByDay.forEach((dayKey, forecasts) {
+      double minTemp = forecasts.map((f) => f.temp).reduce((a, b) => a < b ? a : b);
+      double maxTemp = forecasts.map((f) => f.temp).reduce((a, b) => a > b ? a : b);
+      
+      var midDayForecast = forecasts.firstWhere(
+        (f) => DateTime.fromMillisecondsSinceEpoch(f.dt * 1000).hour >= 12, 
+        orElse: () => forecasts.first
+      );
+      
+      dailyList.add(DailyForecast(
+        dt: forecasts.first.dt,
+        minTemp: minTemp,
+        maxTemp: maxTemp,
+        mainCondition: midDayForecast.mainCondition,
+        icon: midDayForecast.icon,
+      ));
+    });
 
     // Check if it's the One Call structure (has 'current' key)
     if (json['current'] != null) {
@@ -59,6 +103,7 @@ class Weather {
         pressure: json['current']['pressure']?.toInt() ?? 0,
         visibility: json['current']['visibility']?.toInt() ?? 0,
         hourly: hourlyList,
+        daily: dailyList,
       );
     } else {
       // Fallback to standard 2.5/weather API structure
@@ -71,6 +116,7 @@ class Weather {
         pressure: json['main']?['pressure']?.toInt() ?? 0,
         visibility: json['visibility']?.toInt() ?? 0,
         hourly: hourlyList, // Properly pass the injected hourly data
+        daily: dailyList,
       );
     }
   }

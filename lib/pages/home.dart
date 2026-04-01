@@ -75,6 +75,16 @@ String _formatTime(int dt) {
   return '$hour$period';
 }
 
+String _formatDay(int dt) {
+  final now = DateTime.now();
+  final time = DateTime.fromMillisecondsSinceEpoch(dt * 1000);
+  if (now.year == time.year && now.month == time.month && now.day == time.day) {
+    return 'Today';
+  }
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  return days[time.weekday - 1];
+}
+
 IconData _getWeatherIcon(String mainCondition) {
   switch (mainCondition.toLowerCase()) {
     case 'clear':
@@ -460,7 +470,7 @@ class DashboardView extends StatelessWidget {
                           ),
                           const SizedBox(width: 8.0),
                           Text(
-                            '7-Day Forecast',
+                            '5-Day Forecast',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -471,25 +481,32 @@ class DashboardView extends StatelessWidget {
                         ],
                       ),
                       const Divider(height: 32, color: Colors.black12),
-                      _buildDailyCard(
-                        'Today',
-                        Icons.wb_cloudy,
-                        14,
-                        22,
-                        0.4,
-                        0.9,
-                      ),
-                      _buildDailyCard('Tue', Icons.wb_sunny, 15, 24, 0.5, 1.0),
-                      _buildDailyCard('Wed', Icons.umbrella, 12, 18, 0.1, 0.5),
-                      _buildDailyCard('Thu', Icons.cloud, 13, 19, 0.3, 0.7),
-                      _buildDailyCard(
-                        'Fri',
-                        Icons.wb_cloudy_outlined,
-                        14,
-                        21,
-                        0.4,
-                        0.8,
-                      ),
+                      if (weather != null && weather!.daily.isNotEmpty)
+                        Builder(
+                          builder: (context) {
+                            double absMin = weather!.daily.map((d) => d.minTemp).reduce((a, b) => a < b ? a : b);
+                            double absMax = weather!.daily.map((d) => d.maxTemp).reduce((a, b) => a > b ? a : b);
+                            double range = absMax - absMin;
+                            if (range == 0) range = 1;
+
+                            return Column(
+                              children: weather!.daily.map((dailyData) {
+                                double start = (dailyData.minTemp - absMin) / range;
+                                double end = (dailyData.maxTemp - absMin) / range;
+                                return _buildDailyCard(
+                                  _formatDay(dailyData.dt),
+                                  _getWeatherIcon(dailyData.mainCondition),
+                                  dailyData.minTemp.round(),
+                                  dailyData.maxTemp.round(),
+                                  start,
+                                  end,
+                                );
+                              }).toList(),
+                            );
+                          },
+                        )
+                      else
+                        const Center(child: Text('--')),
                     ],
                   ),
                 ),
