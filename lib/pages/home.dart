@@ -1,6 +1,8 @@
 import 'package:atmospheric/components/app_bar.dart';
 import 'package:atmospheric/components/nav_bar.dart';
 import 'package:atmospheric/models/weather.dart';
+import 'package:atmospheric/models/hourly_forecast.dart';
+import 'package:atmospheric/models/daily_forecast.dart';
 import 'package:atmospheric/pages/location.dart';
 import 'package:atmospheric/pages/search.dart';
 import 'package:atmospheric/pages/settings.dart';

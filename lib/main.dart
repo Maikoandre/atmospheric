@@ -1,6 +1,8 @@
 import 'package:atmospheric/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'models/daily_forecast.dart';
+import 'models/hourly_forecast.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
