@@ -2,13 +2,15 @@ import 'package:atmospheric/components/app_bar.dart';
 import 'package:atmospheric/components/nav_bar.dart';
 import 'package:atmospheric/models/weather.dart';
 import 'package:atmospheric/models/hourly_forecast.dart';
-import 'package:atmospheric/models/daily_forecast.dart';
 import 'package:atmospheric/pages/location.dart';
 import 'package:atmospheric/pages/search.dart';
 import 'package:atmospheric/pages/settings.dart';
 import 'package:atmospheric/services/weather_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
+
+final logger = Logger();
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -41,7 +43,7 @@ class _HomePageState extends State<HomePage> {
       });
     } // lib/pages/home.dart
     catch (e) {
-      print("ERRO DETALHADO: $e"); // Isso mostrará o motivo real no terminal
+      logger.e("Failed to fetch weather data: $e");
     }
   }
 

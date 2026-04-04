@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:atmospheric/models/weather.dart';
+import 'package:atmospheric/pages/home.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -38,12 +39,11 @@ class WeatherService {
     if (weatherResponse.statusCode == 200 && forecastResponse.statusCode == 200) {
       final weatherJson = jsonDecode(weatherResponse.body);
       final forecastJson = jsonDecode(forecastResponse.body);
-      weatherJson['hourly'] = forecastJson['list']; // Inject standard forecast list for the model mapped hourly field
+      weatherJson['hourly'] = forecastJson['list'];
       return Weather.fromJson(weatherJson, cityName: cityName);
     } else {
-      // Isso vai mostrar no terminal se é erro 401 (chave), 404 (cidade) ou outro.
-      print("Erro da API Current: ${weatherResponse.statusCode} - ${weatherResponse.body}");
-      print("Erro da API Forecast: ${forecastResponse.statusCode} - ${forecastResponse.body}");
+      logger.e("Failed to fetch weather data: ${weatherResponse.statusCode} - ${weatherResponse.body}");
+      logger.e("Failed to fetch forecast data: ${forecastResponse.statusCode} - ${forecastResponse.body}");
       throw Exception('Failed to load weather data');
     }
   }
@@ -74,8 +74,8 @@ class WeatherService {
 
     if (placemarks.isEmpty) return "";
 
-    print("Coordenadas: ${position.latitude}, ${position.longitude}");
-    print("Placemark encontrado: ${placemarks.first.toString()}");
+    logger.i("Coordenadas: ${position.latitude}, ${position.longitude}");
+    logger.i("Placemark encontrado: ${placemarks.first.toString()}");
 
     // lib/services/weather_service.dart
 
