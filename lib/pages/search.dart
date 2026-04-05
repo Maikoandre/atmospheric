@@ -84,9 +84,9 @@ class _SearchPageState extends State<SearchPage> {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: const Color(
-                              0xFF181C21,
-                            ).withValues(alpha: 0.6), // on-surface com opacidade
+                            color: const Color(0xFF181C21).withValues(
+                              alpha: 0.6,
+                            ), // on-surface com opacidade
                             letterSpacing: 1.5,
                           ),
                         ),
@@ -123,6 +123,55 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 24),
+
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Título da Seção
+                  const Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 16.0,
+                    ),
+                    child: Text(
+                      'SUGGESTED CITIES',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ),
+
+                  // Grid de Cidades Sugeridas
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: GridView.count(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: 2, // 2 colunas como no grid-cols-2
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio:
+                          0.85, // Ajusta a proporção para o card ficar alto
+                      children: [
+                        _buildSuggestedCard(
+                          'Paris',
+                          'France',
+                          'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=500',
+                        ),
+                        _buildSuggestedCard(
+                          'New York',
+                          'USA',
+                          'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=500',
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -131,8 +180,12 @@ class _SearchPageState extends State<SearchPage> {
   }
 }
 
-
-Widget _buildRecentItem(String city, String country, String temp, String status) {
+Widget _buildRecentItem(
+  String city,
+  String country,
+  String temp,
+  String status,
+) {
   return Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
@@ -152,7 +205,7 @@ Widget _buildRecentItem(String city, String country, String temp, String status)
           child: const Icon(Icons.history, color: Color(0xFF005DAC), size: 20),
         ),
         const SizedBox(width: 16),
-        
+
         // Nome da Cidade e País
         Expanded(
           child: Column(
@@ -160,7 +213,10 @@ Widget _buildRecentItem(String city, String country, String temp, String status)
             children: [
               Text(
                 city,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 country,
@@ -169,7 +225,7 @@ Widget _buildRecentItem(String city, String country, String temp, String status)
             ],
           ),
         ),
-        
+
         // Temperatura e Status
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -177,16 +233,84 @@ Widget _buildRecentItem(String city, String country, String temp, String status)
             Text(
               temp,
               style: const TextStyle(
-                fontSize: 18, 
-                fontWeight: FontWeight.bold, 
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
                 color: Color(0xFF005DAC),
               ),
             ),
             Text(
               status.toUpperCase(),
-              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Color(0xFF414752)),
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF414752),
+              ),
             ),
           ],
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildSuggestedCard(String city, String country, String imageUrl) {
+  return Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(24), // rounded-2xl
+      color: const Color(0xFFF2F3FC),
+    ),
+    clipBehavior: Clip.antiAlias, 
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        // Imagem de fundo com opacidade
+        Opacity(
+          opacity: 0.8,
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+          ),
+        ),
+        
+        // Gradiente para o texto não sumir na imagem
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.transparent,
+                Colors.black.withValues(alpha: 0.8), // bg-gradient-to-t
+              ],
+            ),
+          ),
+        ),
+        
+        // Textos posicionados na parte inferior
+        Positioned(
+          bottom: 16,
+          left: 16,
+          right: 16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                city,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                country,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.7),
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     ),
