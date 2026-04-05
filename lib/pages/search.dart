@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -172,6 +173,107 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ],
               ),
+
+              const SizedBox(height: 24),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24.0,
+                  vertical: 32.0,
+                ),
+                child: Container(
+                  height: 160, // Altura h-40 do seu HTML
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF2F3FC), // surface-container-low
+                    borderRadius: BorderRadius.circular(32), // rounded-3xl
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Stack(
+                    children: [
+                      // Imagem do Mapa em Tons de Cinza
+                      Opacity(
+                        opacity: 0.4,
+                        child: ColorFiltered(
+                          colorFilter: const ColorFilter.matrix([
+                            0.2126,
+                            0.7152,
+                            0.0722,
+                            0,
+                            0,
+                            0.2126,
+                            0.7152,
+                            0.0722,
+                            0,
+                            0,
+                            0.2126,
+                            0.7152,
+                            0.0722,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                          ]), // Efeito grayscale do Tailwind
+                          child: Image.network(
+                            'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=1000',
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
+                        ),
+                      ),
+
+                      // Botão Centralizado com Efeito Glassmorphism
+                      Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(99),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaX: 10,
+                              sigmaY: 10,
+                            ), // backdrop-blur-md
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 12,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(
+                                  alpha: 0.8,
+                                ), // bg-surface-container-lowest/90
+                                borderRadius: BorderRadius.circular(99),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.2),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.explore,
+                                    color: Color(0xFF005DAC),
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Text(
+                                    'Explore Map',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF181C21), // on-surface
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -259,19 +361,16 @@ Widget _buildSuggestedCard(String city, String country, String imageUrl) {
       borderRadius: BorderRadius.circular(24), // rounded-2xl
       color: const Color(0xFFF2F3FC),
     ),
-    clipBehavior: Clip.antiAlias, 
+    clipBehavior: Clip.antiAlias,
     child: Stack(
       fit: StackFit.expand,
       children: [
         // Imagem de fundo com opacidade
         Opacity(
           opacity: 0.8,
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.cover,
-          ),
+          child: Image.network(imageUrl, fit: BoxFit.cover),
         ),
-        
+
         // Gradiente para o texto não sumir na imagem
         Container(
           decoration: BoxDecoration(
@@ -285,7 +384,7 @@ Widget _buildSuggestedCard(String city, String country, String imageUrl) {
             ),
           ),
         ),
-        
+
         // Textos posicionados na parte inferior
         Positioned(
           bottom: 16,
