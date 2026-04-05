@@ -138,29 +138,7 @@ class _LocationPageState extends State<LocationPage> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  // Linha de temperatura máxima e mínima
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'H: $highTemp',
-                        style: const TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          '|',
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.5),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        'L: $lowTemp',
-                        style: const TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                    ],
-                  ),
+                  
                 ],
               ),
             ),
@@ -218,17 +196,6 @@ class _LocationPageState extends State<LocationPage> {
                       ),
                       const SizedBox(height: 32),
 
-                      // Placeholder para o Gráfico (SVG no original)
-                      SizedBox(
-                        height: 80,
-                        width: double.infinity,
-                        child: CustomPaint(
-                          painter:
-                              CurvePainter(), // Classe personalizada para a linha curva
-                        ),
-                      ),
-
-                      const SizedBox(height: 24),
 
                       // Lista de Horas (Scroll Horizontal)
                       SingleChildScrollView(
@@ -283,7 +250,7 @@ class _LocationPageState extends State<LocationPage> {
                 children: [
                   _buildMetricCard(
                     'UV INDEX',
-                    w.uvIndex.round().toString(),
+                    w.uvIndex.toString(),
                     uvLevel,
                     Icons.light_mode,
                     hasBar: true,
@@ -334,7 +301,7 @@ class _LocationPageState extends State<LocationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      '7-Day Forecast',
+                      '5-Day Forecast',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -346,13 +313,13 @@ class _LocationPageState extends State<LocationPage> {
                       double absMin = 1000;
                       double absMax = -1000;
                       if (w.daily.isNotEmpty) {
-                        absMin = w.daily.map((d) => d.minTemp).reduce((a, b) => a < b ? a : b);
-                        absMax = w.daily.map((d) => d.maxTemp).reduce((a, b) => a > b ? a : b);
+                        absMin = w.daily.take(5).map((d) => d.minTemp).reduce((a, b) => a < b ? a : b);
+                        absMax = w.daily.take(5).map((d) => d.maxTemp).reduce((a, b) => a > b ? a : b);
                       }
                       double range = absMax - absMin;
                       if (range == 0) range = 1;
                       
-                      return w.daily.map((d) {
+                      return w.daily.take(5).map((d) {
                         String dayStr = 'Today';
                         final now = DateTime.now();
                         final time = DateTime.fromMillisecondsSinceEpoch(d.dt * 1000);
@@ -381,42 +348,6 @@ class _LocationPageState extends State<LocationPage> {
                         );
                       });
                     })(),
-                    _buildForecastRow(
-                      'Tue',
-                      Icons.wb_cloudy,
-                      69,
-                      54,
-                      0.2,
-                      0.7,
-                      Colors.blue,
-                    ),
-                    _buildForecastRow(
-                      'Wed',
-                      Icons.cloud,
-                      65,
-                      52,
-                      0.15,
-                      0.6,
-                      Colors.blueGrey,
-                    ),
-                    _buildForecastRow(
-                      'Thu',
-                      Icons.umbrella,
-                      61,
-                      50,
-                      0.1,
-                      0.5,
-                      Colors.orange,
-                    ),
-                    _buildForecastRow(
-                      'Fri',
-                      Icons.wb_sunny,
-                      74,
-                      58,
-                      0.3,
-                      0.8,
-                      Colors.blue,
-                    ),
                   ],
                 ),
               ),
@@ -482,7 +413,7 @@ class _LocationPageState extends State<LocationPage> {
                       ),
                       child: FractionallySizedBox(
                         alignment: Alignment.centerLeft,
-                        widthFactor: (w.aqi / 5.0).clamp(0.0, 1.0),
+                        widthFactor: ((6 - w.aqi) / 5.0).clamp(0.0, 1.0),
                         child: Container(
                           decoration: BoxDecoration(
                             color: const Color(0xFF005DAC),
@@ -535,48 +466,6 @@ Widget _buildHourlyItem(
       ],
     ),
   );
-}
-
-class CurvePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color =
-          const Color(0xFF005DAC) // Cor primária do seu HTML
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0
-      ..strokeCap = StrokeCap.round;
-
-    final path = Path();
-
-    // Desenha a curva suave baseada no SVG do seu código
-    path.moveTo(0, size.height * 0.8);
-    path.quadraticBezierTo(
-      size.width * 0.25,
-      size.height * 0.7,
-      size.width * 0.5,
-      size.height * 0.4,
-    );
-    path.quadraticBezierTo(
-      size.width * 0.75,
-      size.height * 0.1,
-      size.width,
-      size.height * 0.5,
-    );
-
-    canvas.drawPath(path, paint);
-
-    // Desenha o ponto indicador (círculo branco com borda azul)
-    final dotPaint = Paint()..color = const Color(0xFF005DAC);
-    final whitePaint = Paint()..color = Colors.white;
-
-    Offset dotPosition = Offset(size.width * 0.25, size.height * 0.73);
-    canvas.drawCircle(dotPosition, 6, dotPaint);
-    canvas.drawCircle(dotPosition, 4, whitePaint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
 Widget _buildMetricCard(

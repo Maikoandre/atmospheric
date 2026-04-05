@@ -103,7 +103,7 @@ class Weather {
         visibility: json['visibility']?.toInt() ?? 0,
         hourly: hourlyList, // Properly pass the injected hourly data
         daily: dailyList,
-        uvIndex: 0.0,
+        uvIndex: json['uvi']?.toDouble() ?? 0.0,
         sunrise: json['sys']?['sunrise']?.toInt() ?? 0,
         sunset: json['sys']?['sunset']?.toInt() ?? 0,
         aqi: json['aqi']?.toInt() ?? 0,
