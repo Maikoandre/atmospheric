@@ -51,6 +51,107 @@ class _SettingsPageState extends State<SettingsPage> {
               'Metric (km/h)',
               'Imperial (mph)',
             ]),
+            // --- SEÇÃO NOTIFICATIONS ---
+            const SizedBox(height: 32),
+            _buildSectionHeader('NOTIFICATIONS'),
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFFFFF), // surface-container-lowest
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                children: [
+                  _buildSettingTile(
+                    title: 'Severe Weather Alerts',
+                    subtitle: 'Immediate life-safety notifications',
+                    icon: Icons.warning_amber_rounded,
+                    iconBgColor: const Color(0xFFFFDAD6), // error-container
+                    iconColor: const Color(0xFFBA1A1A), // error
+                    trailing: Switch(
+                      value: true,
+                      onChanged: (v) {},
+                      activeThumbColor: const Color(0xFF005DAC),
+                    ),
+                  ),
+                  const Divider(
+                    height: 1,
+                    indent: 70,
+                    color: Color(0xFFE0E2EA),
+                  ),
+                  _buildSettingTile(
+                    title: 'Daily Summary',
+                    subtitle: 'Morning briefing at 7:00 AM',
+                    icon: Icons.event_note,
+                    trailing: Switch(value: false, onChanged: (v) {}),
+                  ),
+                ],
+              ),
+            ),
+
+            // --- SEÇÃO ABOUT ---
+            const SizedBox(height: 32),
+            _buildSectionHeader('ABOUT'),
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFFFFF),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              clipBehavior: Clip.antiAlias, // Garante que o efeito de clique respeite o arredondamento
+              child: Column(
+                children: [
+                  _buildAboutTile(
+                    'App Version',
+                    trailingText: 'v2.4.0 (Stable)',
+                    icon: Icons.info_outline,
+                  ),
+                  const Divider(
+                    height: 1,
+                    indent: 70,
+                    color: Color(0xFFE0E2EA),
+                  ),
+                  _buildAboutTile(
+                    'Terms of Service',
+                    icon: Icons.gavel,
+                    showChevron: true,
+                  ),
+                  const Divider(
+                    height: 1,
+                    indent: 70,
+                    color: Color(0xFFE0E2EA),
+                  ),
+                  _buildAboutTile(
+                    'Credits & Acknowledgements',
+                    icon: Icons.groups_outlined,
+                    showChevron: true,
+                  ),
+                ],
+              ),
+            ),
+
+            // Rodapé de Copyright
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 48.0),
+              child: Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'ATMOSPHERIC WEATHER ENGINE',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2.0,
+                        color: Colors.black26,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Refining Your Sky Since 2024',
+                      style: TextStyle(fontSize: 10, color: Colors.black26),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -105,18 +206,78 @@ Widget _buildUnitSelector(String title, List<String> options) {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
-                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                    boxShadow: [
+                      BoxShadow(color: Colors.black12, blurRadius: 4),
+                    ],
                   ),
-                  child: Center(child: Text(options[0], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
+                  child: Center(
+                    child: Text(
+                      options[0],
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
                 ),
               ),
               Expanded(
-                child: Center(child: Text(options[1], style: const TextStyle(fontSize: 12, color: Color(0xFF414752)))),
+                child: Center(
+                  child: Text(
+                    options[1],
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF414752),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
         ),
       ],
     ),
+  );
+}
+
+Widget _buildSettingTile({
+  required String title,
+  required String subtitle,
+  required IconData icon,
+  required Widget trailing,
+  Color? iconBgColor,
+  Color? iconColor,
+}) {
+  return ListTile(
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    leading: Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: iconBgColor ?? const Color(0xFF95CFFF).withValues(alpha: 0.3), // secondary-container
+        shape: BoxShape.circle,
+      ),
+      child: Icon(icon, color: iconColor ?? const Color(0xFF005DAC), size: 20),
+    ),
+    title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+    subtitle: Text(subtitle, style: const TextStyle(fontSize: 12, color: Color(0xFF414752))),
+    trailing: trailing,
+  );
+}
+
+Widget _buildAboutTile(String title, {IconData? icon, String? trailingText, bool showChevron = false}) {
+  return ListTile(
+    leading: Icon(icon, color: const Color(0xFF414752), size: 20),
+    title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+    trailing: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (trailingText != null)
+          Text(trailingText, style: const TextStyle(color: Color(0xFF414752), fontSize: 13)),
+        if (showChevron)
+          const Icon(Icons.chevron_right, color: Color(0xFF414752), size: 20),
+      ],
+    ),
+    onTap: () {}, // Efeito de clique tonal-shift
   );
 }

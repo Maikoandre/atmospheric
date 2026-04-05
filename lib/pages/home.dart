@@ -56,7 +56,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: CustomAppBar(
+        title: _weather?.cityName ?? 'Atmospheric',
+      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: CustomNavbar(
         selectedIndex: _selectedIndex,
