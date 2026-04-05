@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> get _pages => [
     DashboardView(weather: _weather),
-    const LocationPage(),
+    LocationPage(weather: _weather),
     const SearchPage(),
     const SettingsPage(),
   ];

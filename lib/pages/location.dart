@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:atmospheric/models/weather.dart';
 
 class LocationPage extends StatefulWidget {
-  const LocationPage({super.key});
+  final Weather? weather;
+  const LocationPage({super.key, this.weather});
 
   @override
   State<LocationPage> createState() => _LocationPageState();
@@ -10,6 +12,56 @@ class LocationPage extends StatefulWidget {
 class _LocationPageState extends State<LocationPage> {
   @override
   Widget build(BuildContext context) {
+    if (widget.weather == null) {
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    final w = widget.weather!;
+    String highTemp = '--', lowTemp = '--';
+    if (w.daily.isNotEmpty) {
+      highTemp = '${w.daily.first.maxTemp.round()}°';
+      lowTemp = '${w.daily.first.minTemp.round()}°';
+    }
+
+    String sunsetTime = '--';
+    String sunriseTime = '--';
+    if (w.sunset > 0) {
+      final sunsetDate = DateTime.fromMillisecondsSinceEpoch(w.sunset * 1000);
+      int h = sunsetDate.hour % 12;
+      if (h == 0) h = 12;
+      String m = sunsetDate.minute.toString().padLeft(2, '0');
+      sunsetTime = '$h:$m';
+    }
+    if (w.sunrise > 0) {
+      final sunriseDate = DateTime.fromMillisecondsSinceEpoch(w.sunrise * 1000);
+      int h = sunriseDate.hour;
+      String m = sunriseDate.minute.toString().padLeft(2, '0');
+      sunriseTime = 'Sunrise: $h:$m AM';
+    }
+    
+    String uvLevel = 'Low';
+    if (w.uvIndex > 2) uvLevel = 'Moderate';
+    if (w.uvIndex > 5) uvLevel = 'High';
+    if (w.uvIndex > 7) uvLevel = 'Very High';
+    if (w.uvIndex > 10) uvLevel = 'Extreme';
+    double uvProgress = w.uvIndex / 11;
+    if (uvProgress > 1.0) uvProgress = 1.0;
+    
+    String aqiLevel = 'Unknown';
+    if (w.aqi == 1) {
+      aqiLevel = 'Good';
+    } else if (w.aqi == 2) aqiLevel = 'Fair';
+    else if (w.aqi == 3) aqiLevel = 'Moderate';
+    else if (w.aqi == 4) aqiLevel = 'Poor';
+    else if (w.aqi == 5) aqiLevel = 'Very Poor';
+    
+    String aqiDesc = 'No data available.';
+    if (w.aqi == 1) {
+      aqiDesc = 'The air quality is ideal for most individuals; enjoy your normal outdoor activities.';
+    } else if (w.aqi == 2) aqiDesc = 'Air quality is acceptable; however, there may be a risk for some people.';
+    else if (w.aqi == 3) aqiDesc = 'Members of sensitive groups may experience health effects.';
+    else if (w.aqi == 4) aqiDesc = 'Everyone may begin to experience health effects; sensitive groups may experience more serious effects.';
+    else if (w.aqi == 5) aqiDesc = 'Health warnings of emergency conditions. The entire population is more likely to be affected.';
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -37,9 +89,9 @@ class _LocationPageState extends State<LocationPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'San Francisco',
-                    style: TextStyle(
+                  Text(
+                    w.cityName,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -49,7 +101,7 @@ class _LocationPageState extends State<LocationPage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'MOSTLY CLEAR',
+                    w.mainCondition.toUpperCase(),
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.8),
                       fontSize: 14,
@@ -63,9 +115,9 @@ class _LocationPageState extends State<LocationPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        '68',
-                        style: TextStyle(
+                      Text(
+                        '${w.temperature.round()}',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 112, // Tamanho aproximado do 7rem
                           fontWeight: FontWeight.w800,
@@ -90,9 +142,9 @@ class _LocationPageState extends State<LocationPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'H: 72°',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      Text(
+                        'H: $highTemp',
+                        style: const TextStyle(color: Colors.white, fontSize: 16),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -103,9 +155,9 @@ class _LocationPageState extends State<LocationPage> {
                           ),
                         ),
                       ),
-                      const Text(
-                        'L: 56°',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      Text(
+                        'L: $lowTemp',
+                        style: const TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ],
                   ),
@@ -182,29 +234,31 @@ class _LocationPageState extends State<LocationPage> {
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          children: [
-                            _buildHourlyItem(
-                              'Now',
-                              Icons.wb_sunny,
-                              '68°',
-                              isSunny: true,
-                            ),
-                            _buildHourlyItem(
-                              '1 PM',
-                              Icons.wb_sunny,
-                              '70°',
-                              isSunny: true,
-                            ),
-                            _buildHourlyItem(
-                              '2 PM',
-                              Icons.wb_sunny,
-                              '72°',
-                              isSunny: true,
-                            ),
-                            _buildHourlyItem('3 PM', Icons.cloud, '71°'),
-                            _buildHourlyItem('4 PM', Icons.cloud, '69°'),
-                            _buildHourlyItem('5 PM', Icons.wb_cloudy, '66°'),
-                          ],
+                          children: w.hourly.take(24).map((h) {
+                            String timeStr = 'Now';
+                            if (w.hourly.indexOf(h) > 0) {
+                              final time = DateTime.fromMillisecondsSinceEpoch(h.dt * 1000);
+                              int hour = time.hour;
+                              String period = hour >= 12 ? 'PM' : 'AM';
+                              hour = hour % 12;
+                              if (hour == 0) hour = 12;
+                              timeStr = '$hour $period';
+                            }
+                            
+                            IconData icon = Icons.cloud;
+                            bool isSunny = h.mainCondition.toLowerCase() == 'clear';
+                            if (isSunny) {
+                              icon = Icons.wb_sunny;
+                            } else if (h.mainCondition.toLowerCase() == 'rain') icon = Icons.umbrella;
+                            else if (h.mainCondition.toLowerCase() == 'clouds') icon = Icons.wb_cloudy;
+                            
+                            return _buildHourlyItem(
+                              timeStr,
+                              icon,
+                              '${h.temp.round()}°',
+                              isSunny: isSunny,
+                            );
+                          }).toList(),
                         ),
                       ),
                     ],
@@ -229,29 +283,29 @@ class _LocationPageState extends State<LocationPage> {
                 children: [
                   _buildMetricCard(
                     'UV INDEX',
-                    '4',
-                    'Moderate',
+                    w.uvIndex.round().toString(),
+                    uvLevel,
                     Icons.light_mode,
                     hasBar: true,
-                    barProgress: 0.4,
+                    barProgress: uvProgress,
                   ),
                   _buildMetricCard(
                     'SUNSET',
-                    '7:42',
-                    'Sunrise: 6:04 AM',
+                    sunsetTime,
+                    sunriseTime,
                     Icons.wb_twilight,
                     hasSunLine: true,
                   ),
                   _buildMetricCard(
                     'HUMIDITY',
-                    '48%',
-                    'Dew point is 54°',
+                    '${w.humidity}%',
+                    'Current Humidity',
                     Icons.percent_sharp,
                   ),
                   _buildMetricCard(
                     'PRESSURE',
-                    '29.92',
-                    'Steady inHg',
+                    '${w.pressure}',
+                    'hPa',
                     Icons.speed,
                   ),
                 ],
@@ -288,15 +342,45 @@ class _LocationPageState extends State<LocationPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    _buildForecastRow(
-                      'Today',
-                      Icons.wb_sunny,
-                      72,
-                      56,
-                      0.25,
-                      0.75,
-                      Colors.blue,
-                    ),
+                    ...(() {
+                      double absMin = 1000;
+                      double absMax = -1000;
+                      if (w.daily.isNotEmpty) {
+                        absMin = w.daily.map((d) => d.minTemp).reduce((a, b) => a < b ? a : b);
+                        absMax = w.daily.map((d) => d.maxTemp).reduce((a, b) => a > b ? a : b);
+                      }
+                      double range = absMax - absMin;
+                      if (range == 0) range = 1;
+                      
+                      return w.daily.map((d) {
+                        String dayStr = 'Today';
+                        final now = DateTime.now();
+                        final time = DateTime.fromMillisecondsSinceEpoch(d.dt * 1000);
+                        if (now.year != time.year || now.month != time.month || now.day != time.day) {
+                          const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                          dayStr = days[time.weekday - 1];
+                        }
+                        
+                        IconData icon = Icons.cloud;
+                        Color color = Colors.blueGrey;
+                        if (d.mainCondition.toLowerCase() == 'clear') { icon = Icons.wb_sunny; color = Colors.blue; }
+                        else if (d.mainCondition.toLowerCase() == 'rain') { icon = Icons.umbrella; color = Colors.blue; }
+                        else if (d.mainCondition.toLowerCase() == 'clouds') { icon = Icons.wb_cloudy; color = Colors.blueGrey; }
+                        
+                        double start = (d.minTemp - absMin) / range;
+                        double end = (d.maxTemp - absMin) / range;
+
+                        return _buildForecastRow(
+                          dayStr,
+                          icon,
+                          d.maxTemp.round(),
+                          d.minTemp.round(),
+                          start,
+                          end,
+                          color,
+                        );
+                      });
+                    })(),
                     _buildForecastRow(
                       'Tue',
                       Icons.wb_cloudy,
@@ -371,17 +455,17 @@ class _LocationPageState extends State<LocationPage> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    const Text(
-                      '24 - Great',
-                      style: TextStyle(
+                    Text(
+                      '${w.aqi} - $aqiLevel',
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'The air quality is ideal for most individuals; enjoy your normal outdoor activities.',
-                      style: TextStyle(
+                    Text(
+                      aqiDesc,
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Color(0xFF414752),
                         height: 1.4,
@@ -398,7 +482,7 @@ class _LocationPageState extends State<LocationPage> {
                       ),
                       child: FractionallySizedBox(
                         alignment: Alignment.centerLeft,
-                        widthFactor: 0.24,
+                        widthFactor: (w.aqi / 5.0).clamp(0.0, 1.0),
                         child: Container(
                           decoration: BoxDecoration(
                             color: const Color(0xFF005DAC),

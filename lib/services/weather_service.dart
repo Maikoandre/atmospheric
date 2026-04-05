@@ -27,22 +27,29 @@ class WeatherService {
     double lat = locations.first.latitude;
     double lon = locations.first.longitude;
 
-    final weatherResponse = await http.get(
-      Uri.parse('$BASE_URL/weather?lat=$lat&lon=$lon&appid=$apiKey&units=metric'),
+    final response = await http.get(
+      Uri.parse('$BASE_URL/onecall?lat=$lat&lon=$lon&exclude=minutely,alerts&appid=$apiKey&units=metric'),
     );
 
-    final forecastResponse = await http.get(
-      Uri.parse('$BASE_URL/forecast?lat=$lat&lon=$lon&appid=$apiKey&units=metric'),
+    final airQualityResponse = await http.get(
+      Uri.parse('$BASE_URL/air_pollution?lat=$lat&lon=$lon&appid=$apiKey'),
     );
 
-    if (weatherResponse.statusCode == 200 && forecastResponse.statusCode == 200) {
-      final weatherJson = jsonDecode(weatherResponse.body);
-      final forecastJson = jsonDecode(forecastResponse.body);
-      weatherJson['hourly'] = forecastJson['list'];
+    if (response.statusCode == 200) {
+      final weatherJson = jsonDecode(response.body);
+      
+      if (airQualityResponse.statusCode == 200) {
+        final airQualityJson = jsonDecode(airQualityResponse.body);
+        if (airQualityJson['list'] != null && airQualityJson['list'].isNotEmpty) {
+          weatherJson['aqi'] = airQualityJson['list'][0]['main']['aqi'];
+        }
+      } else {
+        logger.e("Failed to fetch air quality data: ${airQualityResponse.statusCode}");
+      }
+      
       return Weather.fromJson(weatherJson, cityName: cityName);
     } else {
-      logger.e("Failed to fetch weather data: ${weatherResponse.statusCode} - ${weatherResponse.body}");
-      logger.e("Failed to fetch forecast data: ${forecastResponse.statusCode} - ${forecastResponse.body}");
+      logger.e("Failed to fetch weather data: ${response.statusCode} - ${response.body}");
       throw Exception('Failed to load weather data');
     }
   }
