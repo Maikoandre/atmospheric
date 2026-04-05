@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   List<Widget> get _pages => [
     DashboardView(weather: _weather),
     LocationPage(weather: _weather),
-    const SearchPage(),
+    SearchPage(onCitySelected: _updateCity),
     const SettingsPage(),
   ];
 
@@ -36,13 +36,18 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _fetchWeather() async {
     String cityName = await _weatherService.getCurrentCity();
+    await _updateCity(cityName);
+  }
+
+  Future<void> _updateCity(String newCity) async {
+    if (newCity.isEmpty) return;
     try {
-      final weather = await _weatherService.getWeather(cityName);
+      final weather = await _weatherService.getWeather(newCity);
       setState(() {
         _weather = weather;
+        _selectedIndex = 0; // Swap to home dashboard automatically
       });
-    } // lib/pages/home.dart
-    catch (e) {
+    } catch (e) {
       logger.e("Failed to fetch weather data: $e");
     }
   }

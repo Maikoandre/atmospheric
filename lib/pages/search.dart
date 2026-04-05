@@ -1,14 +1,115 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:atmospheric/services/weather_service.dart';
+import 'package:atmospheric/models/weather.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  final Function(String)? onCitySelected;
+  const SearchPage({super.key, this.onCitySelected});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final TextEditingController _searchController = TextEditingController();
+  List<String> _recentSearches = [];
+  Map<String, Weather> _recentWeather = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRecentSearches();
+  }
+
+  Future<void> _loadRecentSearches() async {
+    final prefs = await SharedPreferences.getInstance();
+    final searches = prefs.getStringList('recent_searches') ?? [];
+    if (mounted) {
+      setState(() {
+        _recentSearches = searches;
+      });
+    }
+    _fetchRecentWeather(searches);
+  }
+
+  Future<void> _fetchRecentWeather(List<String> searches) async {
+    final w = WeatherService('');
+    for (var city in searches) {
+      try {
+        final weather = await w.getWeather(city);
+        if (mounted) {
+          setState(() {
+            _recentWeather[city] = weather;
+          });
+        }
+      } catch (e) {
+        // Ignore failure for a specific recent city
+      }
+    }
+  }
+
+  Future<void> _saveRecentSearch(String city) async {
+    if (city.isEmpty) return;
+    final prefs = await SharedPreferences.getInstance();
+    List<String> searches = prefs.getStringList('recent_searches') ?? [];
+    
+    // Remove if exists to push it to the top
+    searches.removeWhere((s) => s.toLowerCase() == city.toLowerCase());
+    searches.insert(0, city);
+    
+    // Limit to 5 recent searches
+    if (searches.length > 5) {
+      searches = searches.sublist(0, 5);
+    }
+    
+    await prefs.setStringList('recent_searches', searches);
+    if (mounted) {
+      setState(() {
+        _recentSearches = searches;
+      });
+    }
+  }
+
+  void _submitSearch(String city) {
+    if (city.isNotEmpty) {
+      _saveRecentSearch(city);
+      if (widget.onCitySelected != null) {
+        widget.onCitySelected!(city);
+      }
+    }
+  }
+
+  Future<void> _useCurrentLocation() async {
+    try {
+      final w = WeatherService(''); // Env key handled natively up stream, but getCurrentCity doesn't need key
+      final currentCity = await w.getCurrentCity();
+      if (currentCity.isNotEmpty) {
+        _submitSearch(currentCity);
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  Future<void> _clearRecentSearches() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('recent_searches');
+    if (mounted) {
+      setState(() {
+        _recentSearches = [];
+        _recentWeather.clear();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +120,9 @@ class _SearchPageState extends State<SearchPage> {
             children: [
               // Campo de entrada de texto
               TextField(
+                controller: _searchController,
+                textInputAction: TextInputAction.search,
+                onSubmitted: _submitSearch,
                 decoration: InputDecoration(
                   hintText: 'Search city or zip code',
                   hintStyle: const TextStyle(
@@ -52,7 +156,7 @@ class _SearchPageState extends State<SearchPage> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: _useCurrentLocation,
                   icon: const Icon(Icons.my_location, size: 20),
                   label: const Text('Current Location'),
                   style: ElevatedButton.styleFrom(
@@ -92,7 +196,7 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: _clearRecentSearches,
                           child: const Text(
                             'Clear all',
                             style: TextStyle(
@@ -109,18 +213,28 @@ class _SearchPageState extends State<SearchPage> {
                   // Lista de Itens Recentes
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Column(
-                      children: [
-                        _buildRecentItem(
-                          'London',
-                          'United Kingdom',
-                          '12°',
-                          'Cloudy',
-                        ),
-                        const SizedBox(height: 12),
-                        _buildRecentItem('Tokyo', 'Japan', '19°', 'Clear'),
-                      ],
-                    ),
+                    child: _recentSearches.isEmpty
+                        ? const Text('No recent searches', style: TextStyle(color: Colors.black54))
+                        : Column(
+                            children: _recentSearches.map((city) {
+                              final w = _recentWeather[city];
+                              final temp = w != null ? '${w.temperature.round()}°' : '--°';
+                              final status = w != null ? w.mainCondition : 'Unknown';
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(16),
+                                  onTap: () => _submitSearch(city),
+                                  child: _buildRecentItem(
+                                    city,
+                                    'Saved',
+                                    temp,
+                                    status,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
                   ),
                 ],
               ),
@@ -158,15 +272,23 @@ class _SearchPageState extends State<SearchPage> {
                       childAspectRatio:
                           0.85, // Ajusta a proporção para o card ficar alto
                       children: [
-                        _buildSuggestedCard(
-                          'Paris',
-                          'France',
-                          'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=500',
+                        InkWell(
+                          borderRadius: BorderRadius.circular(24),
+                          onTap: () => _submitSearch('Paris'),
+                          child: _buildSuggestedCard(
+                            'Paris',
+                            'France',
+                            'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=500',
+                          ),
                         ),
-                        _buildSuggestedCard(
-                          'New York',
-                          'USA',
-                          'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=500',
+                        InkWell(
+                          borderRadius: BorderRadius.circular(24),
+                          onTap: () => _submitSearch('New York'),
+                          child: _buildSuggestedCard(
+                            'New York',
+                            'USA',
+                            'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=500',
+                          ),
                         ),
                       ],
                     ),
