@@ -1,4 +1,3 @@
-import 'package:atmospheric/components/app_bar.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -13,9 +12,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9FF), // surface-bright
-      appBar: const CustomAppBar(
-        title: 'Settings',
-      ), // Reutilizando seu componente
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
         child: Column(
