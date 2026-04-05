@@ -88,6 +88,14 @@ Atmospheric uses the **OpenWeather API** (Free Tier Mode), efficiently structure
      - *Hourly Scale:* Maps directly to extract adjacent upcoming windows, forming the 24-hour horizontal predictive slider.
      - *Daily Computation:* A custom aggregation model loops through all independent 3-hour data points, sequentially grouping them by their literal calendar day. It then isolates absolute minimums (`minTemp`) and maximums (`maxTemp`) for that specific day, projecting those limits into the 5-Day grouped UI queue (`weather.daily`).
 
+3. **Air Pollution Metadata (AQI)**
+   - **Endpoint**: `GET /air_pollution`
+   - **Purpose**: Collects localized air quality health indicators to map global Air Quality Index (AQI) values visually directly on the details page.
+
+4. **Ultraviolet Exposure (UV Index)**
+   - **Endpoint**: `GET /uvi`
+   - **Purpose**: A legacy endpoint utilized specifically to gather and relay absolute sun intensity metrics into the Location views interface for health safety tracking.
+
 ---
 
 ## 📦 Core Dependencies
