@@ -212,7 +212,7 @@ class _LocationPageState extends State<LocationPage> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 24),
 
             Padding(
@@ -257,6 +257,163 @@ class _LocationPageState extends State<LocationPage> {
                 ],
               ),
             ),
+            // Espaçamento entre o Grid e a Previsão Semanal
+            const SizedBox(height: 32),
+
+            // --- SEÇÃO 7-DAY FORECAST ---
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFFFFF), // surface-container-lowest
+                  borderRadius: BorderRadius.circular(32), // rounded-[2rem]
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(51),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '7-Day Forecast',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF181C21),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _buildForecastRow(
+                      'Today',
+                      Icons.wb_sunny,
+                      72,
+                      56,
+                      0.25,
+                      0.75,
+                      Colors.blue,
+                    ),
+                    _buildForecastRow(
+                      'Tue',
+                      Icons.wb_cloudy,
+                      69,
+                      54,
+                      0.2,
+                      0.7,
+                      Colors.blue,
+                    ),
+                    _buildForecastRow(
+                      'Wed',
+                      Icons.cloud,
+                      65,
+                      52,
+                      0.15,
+                      0.6,
+                      Colors.blueGrey,
+                    ),
+                    _buildForecastRow(
+                      'Thu',
+                      Icons.umbrella,
+                      61,
+                      50,
+                      0.1,
+                      0.5,
+                      Colors.orange,
+                    ),
+                    _buildForecastRow(
+                      'Fri',
+                      Icons.wb_sunny,
+                      74,
+                      58,
+                      0.3,
+                      0.8,
+                      Colors.blue,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // --- SEÇÃO AIR QUALITY ---
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF2F3FC), // surface-container-low
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.air,
+                          size: 14,
+                          color: Color(0xFF414752),
+                        ),
+                        const SizedBox(width: 8),
+                        const Text(
+                          'AIR QUALITY',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      '24 - Great',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'The air quality is ideal for most individuals; enjoy your normal outdoor activities.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF414752),
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    // Barra de progresso da qualidade do ar
+                    Container(
+                      height: 8,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: FractionallySizedBox(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: 0.24,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF005DAC),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 32,
+            ), // Espaço final para não colar na barra de navegação
           ],
         ),
       ),
@@ -338,8 +495,15 @@ class CurvePainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
-Widget _buildMetricCard(String title, String value, String subtitle, IconData icon, 
-    {bool hasBar = false, double barProgress = 0.0, bool hasSunLine = false}) {
+Widget _buildMetricCard(
+  String title,
+  String value,
+  String subtitle,
+  IconData icon, {
+  bool hasBar = false,
+  double barProgress = 0.0,
+  bool hasSunLine = false,
+}) {
   return Container(
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
@@ -406,6 +570,57 @@ Widget _buildMetricCard(String title, String value, String subtitle, IconData ic
           )
         else
           const SizedBox(height: 4),
+      ],
+    ),
+  );
+}
+
+Widget _buildForecastRow(String day, IconData icon, int high, int low, double start, double end, Color color) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 12.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SizedBox(
+          width: 50,
+          child: Text(day, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+        ),
+        Icon(icon, color: color, size: 22),
+        // Barra de variação de temperatura
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Container(
+              height: 6,
+              decoration: BoxDecoration(
+                color: const Color(0xFFECEDF6), // surface-container
+                borderRadius: BorderRadius.circular(3),
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 100 * start, // Simula a posição baseada na escala
+                    right: 100 * (1 - end),
+                    child: Container(
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF005DAC),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Row(
+          children: [
+            Text('$high°', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            const SizedBox(width: 8),
+            Text('$low°', style: const TextStyle(color: Color(0xFF414752), fontSize: 14)),
+          ],
+        ),
       ],
     ),
   );
