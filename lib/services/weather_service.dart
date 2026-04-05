@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:atmospheric/models/weather.dart';
 import 'package:atmospheric/pages/home.dart';
 import 'package:geocoding/geocoding.dart';
