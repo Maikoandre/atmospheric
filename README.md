@@ -1,6 +1,6 @@
 <div align="center">
   <h1>🌤️ Atmospheric</h1>
-  <p><strong>An elegant, dynamic, and native Weather Application built with Flutter.</strong></p>
+  <p><strong>Um aplicativo de clima elegante, dinâmico e nativo construído com Flutter.</strong></p>
   <p>
     <a href="https://flutter.dev/"><img src="https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white" alt="Flutter"></a>
     <a href="https://dart.dev/"><img src="https://img.shields.io/badge/Dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white" alt="Dart"></a>
@@ -10,162 +10,156 @@
 
 ---
 
-## 📖 Overview
+## 📖 Visão Geral
 
-**Atmospheric** is a sleek, dynamic weather application built with Flutter that delivers robust and granular weather forecasts. It intelligently consumes the OpenWeather API's free tier, dynamically transforming raw 3-hour forecasts into comprehensive, accurate predictive models for the entire week, bypassing premium restrictions with smart frontend aggregation.
+O **Atmospheric** é um aplicativo de clima sofisticado e dinâmico, desenvolvido com Flutter, que oferece previsões meteorológicas robustas e granulares. Ele consome de forma inteligente a camada gratuita da API OpenWeather, transformando dinamicamente previsões brutas de 3 horas em modelos preditivos abrangentes e precisos para toda a semana, contornando restrições premium com uma agregação inteligente no frontend.
 
-Designed with modern UI/UX principles, Atmospheric features glassmorphism, fluid interactive sliders, and aesthetic bento-grid layouts to present complex telemetry data cleanly.
-
----
-
-## ✨ Key Features
-
-- **Real-Time Weather Telemetry:** Live updates on temperature, humidity, wind speed, pressure, and visibility.
-- **Hourly Predictive Slider:** fluid timeline mapping out the weather for the next 24 hours.
-- **Aggregated 5-Day Forecast:** Intelligent aggregation algorithm that processes 40 individual 3-hour API data points into seamless daily minimum/maximum extremes.
-- **Location & Geocoding Integration:** Natively fetches system-level GPS coordinates and reverse-geocodes them into human-readable city names.
-- **Bento Grid Layout:** Important weather metrics displayed in a modern, easily digestible grid format.
-- **State-Preserving Navigation:** Utilizes an indexed stack routing approach to keep background processes alive while seamlessly switching views.
-- **Environment Security:** API keys are protected through secure `.env` integration.
+Projetado com princípios modernos de UI/UX, o Atmospheric apresenta *glassmorphism*, sliders interativos fluidos e layouts estéticos em *bento-grid* para apresentar dados complexos de telemetria de forma limpa.
 
 ---
 
-## 🏗️ Architecture & Project Structure
+## ✨ Principais Recursos
 
-The project strictly adheres to a clean, service-oriented UI pattern common in highly scalable Flutter environments. It enforces separation of concerns by splitting algorithmic processing from widget rendering.
+- **Telemetria Climática em Tempo Real:** Atualizações ao vivo sobre temperatura, umidade, velocidade do vento, pressão e visibilidade.
+- **Slider Preditivo de Hora em Hora:** Linha do tempo fluida mapeando o clima para as próximas 24 horas.
+- **Previsão de 5 Dias Agregada:** Algoritmo de agregação inteligente que processa 40 pontos de dados individuais da API (a cada 3 horas) em extremos diários de mínima/máxima integrados.
+- **Integração de Localização e Geocodificação:** Busca nativamente coordenadas GPS do sistema e realiza geocodificação reversa para nomes de cidades legíveis por humanos.
+- **Layout Bento Grid:** Métricas climáticas importantes exibidas em um formato de grade moderno e de fácil digestão.
+- **Navegação com Preservação de Estado:** Utiliza uma abordagem de roteamento por pilha indexada para manter processos de fundo ativos enquanto alterna as visualizações sem interrupções.
+- **Segurança de Ambiente:** As chaves de API são protegidas através da integração segura com arquivos `.env`.
+
+---
+
+## 🏗️ Arquitetura e Estrutura do Projeto
+
+O projeto adere estritamente a um padrão de UI limpo e orientado a serviços, comum em ambientes Flutter altamente escaláveis. Ele reforça a separação de responsabilidades, dividindo o processamento algorítmico da renderização de widgets.
 
 ```text
 atmospheric/
-├── android/            # Android native project files
-├── ios/                # iOS native project files
-├── web/                # Web application files
+├── android/            # Arquivos de projeto nativo Android
+├── ios/                # Arquivos de projeto nativo iOS
+├── web/                # Arquivos de aplicação Web
 ├── assets/
-│   ├── images/         # Local static assets
-│   └── .env            # Environment configuration (Not tracked in git)
+│   ├── images/         # Ativos estáticos locais
+│   └── .env            # Configuração de ambiente (Não rastreado pelo git)
 ├── lib/
-│   ├── components/     # Highly reusable, isolated widget structures (e.g., NavBars, AppBars)
-│   ├── models/         # Core application DTOs (Data Transfer Objects) mapping JSON
-│   ├── pages/          # Main logical entry points for application routing
-│   ├── services/       # Abstractions for external integration (HTTP, Geolocation)
-│   └── main.dart       # Application entry point and global state configuration
-└── pubspec.yaml        # Flutter dependency manager
+│   ├── components/     # Estruturas de widgets altamente reutilizáveis e isoladas
+│   ├── models/         # DTOs principais da aplicação mapeando JSON
+│   ├── pages/          # Pontos de entrada lógicos para o roteamento da aplicação
+│   ├── services/       # Abstrações para integração externa (HTTP, Geolocalização)
+│   └── main.dart       # Ponto de entrada e configuração de estado global
+└── pubspec.yaml        # Gerenciador de dependências do Flutter
 ```
 
-### 🧠 Domain Logic Breakdown
+### 🧠 Divisão da Lógica de Domínio
 
-- **`lib/models/`**: Contains Standard Data Transfer Objects (DTOs). Complex JSON mappings cleanly convert raw, unstructured HTTP responses into strongly-typed configurations ready for UI injection. Includes entities like `Weather`, `HourlyForecast`, and `DailyForecast`.
-- **`lib/services/`**: Securely implements external API endpoint access and firmly couples geographical logic to OS-level geolocation services, keeping data fetching completely abstracted from UI lifecycles.
-- **`lib/components/`**: Houses self-contained layout structures to avoid boilerplate duplication. Handles global UI components like the base AppBar and the interactive dynamic Bottom Navigation Bar.
-- **`lib/pages/`**: The core routing views that connect the global state with specific modular features.
-
----
-
-## 🛣️ Navigation & Routing
-
-Atmospheric implements a static bottom-bar indexed stack routing architecture, ensuring the user's progress and the application's state are preserved smoothly across tabs without unnecessary re-rendering.
-
-1. **`Home / Dashboard View`** (`lib/pages/home.dart`): The central core computing and rendering the application's live telemetry endpoints. It showcases beautiful 24-hour horizontal scrolling lists and a processed 5-day absolute high/low chart.
-2. **`Location View`** (`lib/pages/location.dart`): Dedicated space for localized metrics like UV Index, Sunset tracking, Air Quality (AQI), and 7-day extended forecasts in a glassmorphic aesthetic layout.
-3. **`Search View`** (`lib/pages/search.dart`): A smooth UI meant to intercept inputs for global location polling, displaying recent searches, and popular global suggestions over a greyscaled global map background.
-4. **`Settings View`** (`lib/pages/settings.dart`): Dedicated to user preferences. Features aesthetic options for theme management (Dark Mode), Unit switching (Metric/Imperial), Notification toggles, and "About" information.
+- **`lib/models/`**: Contém Objetos de Transferência de Dados (DTOs). Mapeamentos JSON complexos convertem respostas HTTP brutas em configurações tipadas prontas para injeção na interface. Inclui entidades como `Weather`, `HourlyForecast` e `DailyForecast`.
+- **`lib/services/`**: Implementa o acesso seguro aos endpoints da API e acopla a lógica geográfica aos serviços de geolocalização do sistema operacional, mantendo a busca de dados abstraída do ciclo de vida da UI.
+- **`lib/components/`**: Abriga estruturas de layout autocontidas para evitar duplicação. Gerencia componentes globais como a AppBar base e a barra de navegação inferior dinâmica.
+- **`lib/pages/`**: As visualizações de rota principais que conectam o estado global com recursos modulares específicos.
 
 ---
 
-## 📡 API Endpoints & Logic Sync
+## 🛣️ Navegação e Roteamento
 
-Atmospheric uses the **OpenWeather API** (Free Tier Mode), efficiently structured to minimize network requests while maximizing displayed information.
+O Atmospheric implementa uma arquitetura de roteamento por pilha indexada (IndexedStack), garantindo que o progresso do usuário e o estado da aplicação sejam preservados suavemente entre as abas, sem re-renderizações desnecessárias.
 
-**Base URL**: `https://api.openweathermap.org/data/2.5`
+1. **`Home / Dashboard View`** (`lib/pages/home.dart`): O núcleo central que computa e renderiza a telemetria ao vivo. Exibe listas de rolagem horizontal de 24 horas e o gráfico de máximas/mínimas processado de 5 dias.
+2. **`Location View`** (`lib/pages/location.dart`): Espaço dedicado para métricas localizadas como Índice UV, pôr do sol, Qualidade do Ar (AQI) e previsões estendidas de 7 dias em um layout estético *glassmorphic*.
+3. **`Search View`** (`lib/pages/search.dart`): Interface suave para busca de locais globais, exibindo buscas recentes e sugestões populares sobre um mapa global em tons de cinza.
+4. **`Settings View`** (`lib/pages/settings.dart`): Dedicado às preferências do usuário. Inclui opções de gerenciamento de tema (Modo Escuro), troca de unidades (Métrico/Imperial), notificações e informações "Sobre".
 
-1. **Current Weather Snapshot**
+---
+
+## 📡 Endpoints da API e Sincronização
+
+O Atmospheric utiliza a **API OpenWeather** (Modo Gratuito), estruturada para minimizar requisições de rede enquanto maximiza a informação exibida.
+
+**URL Base**: `https://api.openweathermap.org/data/2.5`
+
+1. **Snapshot do Clima Atual**
    - **Endpoint**: `GET /weather`
-   - **Purpose**: Collects instantaneous weather data driven by the device's geolocation parameters (`lat` and `lon`). Populates core static metrics visually on the dashboard: Main Temperature, Visibility, Relative Humidity, and Barometric Pressure.
+   - **Propósito**: Coleta dados climáticos instantâneos baseados nas coordenadas do dispositivo (`lat` e `lon`). Alimenta as métricas estáticas visuais: Temperatura, Visibilidade, Umidade Relativa e Pressão Barométrica.
 
-2. **Predictive Analytics Matrix (5-Day Forecast)**
+2. **Matriz de Análise Preditiva (Previsão de 5 Dias)**
    - **Endpoint**: `GET /forecast`
-   - **Purpose**: A comprehensive forecasting tool that pulls 40 discrete timestamps (spaced 3 hours apart).
-   - **Internal Aggregation Engine**:
-     - *Hourly Scale:* Maps directly to extract adjacent upcoming windows, forming the 24-hour horizontal predictive slider.
-     - *Daily Computation:* A custom aggregation model loops through all independent 3-hour data points, sequentially grouping them by their literal calendar day. It then isolates absolute minimums (`minTemp`) and maximums (`maxTemp`) for that specific day, projecting those limits into the 5-Day grouped UI queue (`weather.daily`).
+   - **Propósito**: Uma ferramenta abrangente que extrai 40 registros temporais (com intervalo de 3 horas).
+   - **Motor de Agregação Interno**:
+     - *Escala Horária:* Mapeia diretamente as janelas próximas para formar o slider preditivo de 24 horas.
+     - *Computação Diária:* Um modelo personalizado percorre todos os pontos de dados de 3 horas, agrupando-os por dia do calendário. Isola as mínimas (`minTemp`) e máximas (`maxTemp`) absolutas daquele dia para a interface.
 
-3. **Air Pollution Metadata (AQI)**
+3. **Metadados de Poluição do Ar (AQI)**
    - **Endpoint**: `GET /air_pollution`
-   - **Purpose**: Collects localized air quality health indicators to map global Air Quality Index (AQI) values visually directly on the details page.
+   - **Propósito**: Coleta indicadores de saúde da qualidade do ar local para mapear valores do Índice de Qualidade do Ar (AQI).
 
-4. **Ultraviolet Exposure (UV Index)**
+4. **Exposição Ultravioleta (Índice UV)**
    - **Endpoint**: `GET /uvi`
-   - **Purpose**: A legacy endpoint utilized specifically to gather and relay absolute sun intensity metrics into the Location views interface for health safety tracking.
+   - **Propósito**: Endpoint utilizado para coletar métricas de intensidade solar para rastreamento de segurança e saúde.
 
 ---
 
-## 📦 Core Dependencies
+## 📦 Dependências Principais
 
-This project takes advantage of highly optimized Flutter packages to handle hard integrations efficiently:
-
-- `http`: Handles the REST layer integration, providing fast parsing tools for API ingestion.
-- `geolocator`: Seamless dynamic real-time positional tracking connecting directly to native device GPS sensors (iOS/Android).
-- `geocoding`: Re-routes generic global coordinates back into exact geographic region limitations, resolving state boundaries and city text.
-- `flutter_dotenv`: Safe environment token injector to secure API payloads, preventing accidental git exposure.
-- `logger`: Professional console output tracking to manage request lifecycles and HTTP error boundaries.
+- `http`: Gerencia a camada REST para ingestão da API.
+- `geolocator`: Rastreamento posicional dinâmico em tempo real conectado aos sensores GPS nativos.
+- `geocoding`: Converte coordenadas globais em nomes de regiões geográficas, resolvendo cidades e estados.
+- `flutter_dotenv`: Injetor seguro de tokens de ambiente para proteger as chaves de API.
+- `logger`: Gerenciamento profissional de logs no console para monitorar requisições e erros HTTP.
 
 ---
 
-## 🚀 Installation & Setup
+## 🚀 Instalação e Configuração
 
-To run Atmospheric locally, follow these steps:
+Para rodar o Atmospheric localmente, siga estes passos:
 
-### 1. Prerequisites
-Ensure you have the following installed on your machine:
-- [Flutter SDK](https://flutter.dev/docs/get-started/install) (Version 3.11.0 or higher)
+### 1. Pré-requisitos
+- [Flutter SDK](https://flutter.dev/docs/get-started/install) (Versão 3.11.0 ou superior)
 - IDE (VS Code, Android Studio, IntelliJ)
-- Active Android/iOS Emulator or Physical Device
+- Emulador Android/iOS ou Dispositivo Físico
 
-### 2. Clone the Repository
+### 2. Clonar o Repositório
 ```bash
-git clone https://github.com/your-username/atmospheric.git
+git clone https://github.com/seu-usuario/atmospheric.git
 cd atmospheric
 ```
 
-### 3. Install Dependencies
+### 3. Instalar Dependências
 ```bash
 flutter pub get
 ```
 
-### 4. Setup Environment Variables
-Atmospheric requires an OpenWeather API Key to function. 
-1. Get a free API key from [OpenWeatherMap](https://openweathermap.org/api).
-2. Create a file named `.env` in the root directory.
-3. Open `.env` and add your API key like so:
+### 4. Configurar Variáveis de Ambiente
+O Atmospheric requer uma chave da API OpenWeather.
+1. Obtenha uma chave gratuita em [OpenWeatherMap](https://openweathermap.org/api).
+2. Crie um arquivo `.env` na raiz do projeto.
+3. Adicione sua chave no arquivo:
 ```env
-API_KEY=your_actual_api_key_here
+API_KEY=sua_chave_aqui
 ```
-*(Note: The `.env` file is excluded in `.gitignore` by default to prevent leakage).*
 
-### 5. Run the Application
-Start your emulator or plug in your device, then execute:
+### 5. Rodar a Aplicação
 ```bash
 flutter run
 ```
 
 ---
 
-## 🤝 Contributing
+## 🤝 Contribuição
 
-We welcome community contributions! If you'd like to help improve Atmospheric, follow these steps:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/AmazingFeature`).
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4. Push to the branch (`git push origin feature/AmazingFeature`).
-5. Open a Pull Request.
+Contribuições são bem-vindas!
+1. Faça um Fork do repositório.
+2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`).
+3. Comite suas mudanças (`git commit -m 'Adiciona MinhaFeature'`).
+4. Dê um push na branch (`git push origin feature/MinhaFeature`).
+5. Abra um Pull Request.
 
 ---
 
-## 📄 License
+## 📄 Licença
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distribuído sob a Licença MIT. Veja `LICENSE` para mais informações.
 
 ---
 <div align="center">
-  <p><b>ATMOSPHERIC WEATHER ENGINE</b><br><i>"Refining Your Sky Since 2024"</i></p>
+  <p><b>ATMOSPHERIC WEATHER ENGINE</b><br><i>"Refinando Seu Céu Desde 2024"</i></p>
 </div>
