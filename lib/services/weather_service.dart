@@ -12,21 +12,7 @@ class WeatherService {
 
   WeatherService(this.apiKey);
 
-  Future<Weather> getWeather(String cityName) async {
-    if (cityName.isEmpty) {
-      throw Exception(
-        'Nome da cidade está vazio. Verifique as permissões de GPS.',
-      );
-    }
-
-    List<Location> locations = await locationFromAddress(cityName);
-    if (locations.isEmpty) {
-      throw Exception('Could not find location for city: $cityName');
-    }
-    
-    double lat = locations.first.latitude;
-    double lon = locations.first.longitude;
-
+  Future<Weather> getWeatherByCoordinates(double lat, double lon, {String? cityName}) async {
     final weatherResponse = await http.get(
       Uri.parse('$BASE_URL/weather?lat=$lat&lon=$lon&appid=$apiKey&units=metric'),
     );
@@ -64,7 +50,7 @@ class WeatherService {
         logger.e("Failed to fetch UV data: ${uvResponse.statusCode}");
       }
       
-      return Weather.fromJson(weatherJson, cityName: cityName);
+      return Weather.fromJson(weatherJson, cityName: cityName ?? weatherJson['name'] ?? 'Unknown Location');
     } else {
       logger.e("Failed to fetch weather data: ${weatherResponse.statusCode} - ${weatherResponse.body}");
       logger.e("Failed to fetch forecast data: ${forecastResponse.statusCode} - ${forecastResponse.body}");
@@ -72,7 +58,25 @@ class WeatherService {
     }
   }
 
-  Future<String> getCurrentCity() async {
+  Future<Weather> getWeather(String cityName) async {
+    if (cityName.isEmpty) {
+      throw Exception(
+        'Nome da cidade está vazio. Verifique as permissões de GPS.',
+      );
+    }
+
+    List<Location> locations = await locationFromAddress(cityName);
+    if (locations.isEmpty) {
+      throw Exception('Could not find location for city: $cityName');
+    }
+    
+    double lat = locations.first.latitude;
+    double lon = locations.first.longitude;
+
+    return getWeatherByCoordinates(lat, lon, cityName: cityName);
+  }
+
+  Future<Weather> getWeatherForCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -91,35 +95,49 @@ class WeatherService {
       locationSettings: locationSettings,
     );
 
-    List<Placemark> placemarks = [];
+    String? city;
     try {
-      placemarks = await placemarkFromCoordinates(
+      List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
       );
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        city = place.subAdministrativeArea ?? place.locality ?? place.subLocality ?? place.administrativeArea;
+      }
     } catch (e) {
       logger.e("Geocoding error: $e");
-      return "London";
     }
 
-    if (placemarks.isEmpty) return "London";
+    return getWeatherByCoordinates(position.latitude, position.longitude, cityName: city);
+  }
 
-    logger.i("Coordenadas: ${position.latitude}, ${position.longitude}");
-    logger.i("Placemark encontrado: ${placemarks.first.toString()}");
+  Future<String> getCurrentCity() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
 
-    // lib/services/weather_service.dart
+    if (permission == LocationPermission.deniedForever) {
+      throw Exception('Permissão negada permanentemente');
+    }
 
-    // ... dentro do método getCurrentCity()
-    final place = placemarks.first;
+    Position position = await Geolocator.getCurrentPosition(
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 100),
+    );
 
-    // Tenta obter o nome da cidade seguindo uma hierarquia de campos
-    String? city =
-        place
-            .subAdministrativeArea ?? // Geralmente contém o município (ex: Guanambi)
-        place.locality ?? // Cidade principal
-        place.subLocality ?? // Distrito ou bairro (ex: Ceraíma)
-        place.administrativeArea; // Estado (em último caso)
-
-    return city ?? "";
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        return place.subAdministrativeArea ?? place.locality ?? place.subLocality ?? place.administrativeArea ?? "";
+      }
+    } catch (e) {
+      logger.e("Geocoding error: $e");
+    }
+    return "London";
   }
 }

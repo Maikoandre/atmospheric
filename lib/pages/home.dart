@@ -36,13 +36,24 @@ class _HomePageState extends State<HomePage> {
   Weather? _weather;
 
   Future<void> _fetchWeather() async {
-    String cityName = await _weatherService.getCurrentCity();
-    await _updateCity(cityName);
+    try {
+      final weather = await _weatherService.getWeatherForCurrentLocation();
+      setState(() {
+        _weather = weather;
+        _selectedIndex = 0;
+      });
+    } catch (e) {
+      logger.e("Failed to fetch initial weather data: $e");
+    }
   }
 
   Future<void> _updateCity(String newCity) async {
     if (newCity.isEmpty) return;
     try {
+      if (newCity == '__CURRENT_LOCATION__') {
+        await _fetchWeather();
+        return;
+      }
       final weather = await _weatherService.getWeather(newCity);
       setState(() {
         _weather = weather;

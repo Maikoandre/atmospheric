@@ -85,10 +85,8 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> _useCurrentLocation() async {
     try {
-      final w = WeatherService(dotenv.env['API_KEY'] ?? ''); // Env key handled natively up stream, but getCurrentCity doesn't need key
-      final currentCity = await w.getCurrentCity();
-      if (currentCity.isNotEmpty) {
-        _submitSearch(currentCity);
+      if (widget.onCitySelected != null) {
+        widget.onCitySelected!('__CURRENT_LOCATION__');
       }
     } catch (e) {
       // ignore

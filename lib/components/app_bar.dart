@@ -16,10 +16,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return AppBar(
       elevation: 0,
       backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
-      leading: IconButton(
-        onPressed: () {},
-        icon: Icon(Icons.menu, color: Theme.of(context).colorScheme.primary),
-      ),
       title: Text(
         'Atmospheric',
         style: TextStyle(
