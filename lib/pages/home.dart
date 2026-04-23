@@ -114,7 +114,7 @@ IconData _getWeatherIcon(String mainCondition) {
   }
 }
 
-Widget _buildBentoCard(BuildContext context, BuildContext context, 
+Widget _buildBentoCard(BuildContext context, 
   String title,
   String value,
   String description,
@@ -136,7 +136,7 @@ Widget _buildBentoCard(BuildContext context, BuildContext context,
             const SizedBox(width: 8),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -163,7 +163,7 @@ Widget _buildHourlyCard(BuildContext context, String time, IconData icon, String
     width: 67,
     margin: const EdgeInsets.symmetric(horizontal: 8.0),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surfaceContainerHigh,
       borderRadius: BorderRadius.circular(50),
       border: Border.all(color: Theme.of(context).colorScheme.onSurface),
       boxShadow: [
@@ -182,18 +182,18 @@ Widget _buildHourlyCard(BuildContext context, String time, IconData icon, String
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
-            color: Colors.blueAccent,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         const SizedBox(height: 10),
-        Icon(icon, size: 25, color: Colors.blueAccent),
+        Icon(icon, size: 25, color: Theme.of(context).colorScheme.primary),
         const SizedBox(height: 10),
         Text(
           temp,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Colors.blueAccent,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         SizedBox(height: 10),
@@ -487,7 +487,7 @@ class DashboardView extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const Divider(height: 32, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12)),
+                      Divider(height: 32, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12)),
                       if (weather != null && weather!.daily.isNotEmpty)
                         Builder(
                           builder: (context) {

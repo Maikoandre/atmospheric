@@ -10,7 +10,7 @@ class CustomNavbar extends StatelessWidget {
     required this.onItemSelected,
   });
 
-  Widget _buildNavItem(IconData icon, String label, int index) {
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, int index) {
     bool isActive = selectedIndex == index;
 
     return GestureDetector(
@@ -23,12 +23,12 @@ class CustomNavbar extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             decoration: BoxDecoration(
-              color: isActive ? const Color(0xFFD4E3FF) : Colors.transparent,
+              color: isActive ? Theme.of(context).colorScheme.primaryContainer : Colors.transparent,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
               icon,
-              color: isActive ? const Color(0xFF005DAC) : Theme.of(context).colorScheme.onSurface45,
+              color: isActive ? Theme.of(context).colorScheme.onPrimaryContainer : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45),
             ),
           ),
           const SizedBox(height: 4),
@@ -37,7 +37,7 @@ class CustomNavbar extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w500,
-              color: isActive ? const Color(0xFF005DAC) : Theme.of(context).colorScheme.onSurface45,
+              color: isActive ? Theme.of(context).colorScheme.onPrimaryContainer : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45),
             ),
           ),
         ],
@@ -50,14 +50,14 @@ class CustomNavbar extends StatelessWidget {
     return Container(
       height: 70,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.9),
+        color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(32.0),
           topRight: Radius.circular(32.0),
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF005DAC).withValues(alpha: 0.06),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.06),
             blurRadius: 24,
             offset: const Offset(0, -4),
           ),
@@ -67,10 +67,10 @@ class CustomNavbar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildNavItem(Icons.home, "Home", 0),
-            _buildNavItem(Icons.location_on_outlined, "Locations", 1),
-            _buildNavItem(Icons.search, "Search", 2),
-            _buildNavItem(Icons.settings_outlined, "Settings", 3),
+            _buildNavItem(context, Icons.home, "Home", 0),
+            _buildNavItem(context, Icons.location_on_outlined, "Locations", 1),
+            _buildNavItem(context, Icons.search, "Search", 2),
+            _buildNavItem(context, Icons.settings_outlined, "Settings", 3),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:atmospheric/main.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -21,7 +22,7 @@ class _SettingsPageState extends State<SettingsPage> {
               'Settings',
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
             ),
-            const Text(
+            Text(
               'Personalize your weather experience',
               style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 14),
             ),
@@ -32,9 +33,19 @@ class _SettingsPageState extends State<SettingsPage> {
             _buildSettingTile(
               context,
               title: 'Dark Mode',
-              subtitle: 'Follow system theme',
+              subtitle: 'Manual toggle',
               icon: Icons.dark_mode,
-              trailing: Switch(value: true, onChanged: (v) {}),
+              trailing: ValueListenableBuilder<ThemeMode>(
+                valueListenable: Main.themeNotifier,
+                builder: (_, ThemeMode currentMode, __) {
+                  return Switch(
+                    value: currentMode == ThemeMode.dark,
+                    onChanged: (v) {
+                      Main.themeNotifier.value = v ? ThemeMode.dark : ThemeMode.light;
+                    },
+                  );
+                },
+              ),
             ),
 
             const SizedBox(height: 32),
@@ -53,7 +64,7 @@ class _SettingsPageState extends State<SettingsPage> {
             _buildSectionHeader('NOTIFICATIONS'),
             Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFFFFFFF), // surface-container-lowest
+                color: Theme.of(context).colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
@@ -71,7 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       activeThumbColor: const Color(0xFF005DAC),
                     ),
                   ),
-                  const Divider(
+                  Divider(
                     height: 1,
                     indent: 70,
                     color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -92,7 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
             _buildSectionHeader('ABOUT'),
             Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFFFFFFF),
+                color: Theme.of(context).colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(20),
               ),
               clipBehavior: Clip.antiAlias, // Garante que o efeito de clique respeite o arredondamento
@@ -104,7 +115,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     trailingText: 'v2.4.0 (Stable)',
                     icon: Icons.info_outline,
                   ),
-                  const Divider(
+                  Divider(
                     height: 1,
                     indent: 70,
                     color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -115,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     icon: Icons.gavel,
                     showChevron: true,
                   ),
-                  const Divider(
+                  Divider(
                     height: 1,
                     indent: 70,
                     color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -205,7 +216,7 @@ Widget _buildUnitSelector(BuildContext context, String title, List<String> optio
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12), blurRadius: 4),

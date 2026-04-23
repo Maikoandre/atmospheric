@@ -15,15 +15,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
-      backgroundColor: Colors.white.withAlpha(200),
+      backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
       leading: IconButton(
         onPressed: () {},
-        icon: Icon(Icons.menu, color: Colors.blueAccent),
+        icon: Icon(Icons.menu, color: Theme.of(context).colorScheme.primary),
       ),
-      title: const Text(
+      title: Text(
         'Atmospheric',
         style: TextStyle(
-          color: Colors.blueAccent,
+          color: Theme.of(context).colorScheme.primary,
           fontWeight: FontWeight.bold,
           fontStyle: FontStyle.italic,
           fontSize: 20,

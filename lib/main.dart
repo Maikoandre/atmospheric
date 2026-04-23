@@ -10,6 +10,7 @@ Future<void> main() async {
 
 class Main extends StatefulWidget {
   const Main({super.key});
+  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
 
   @override
   State<Main> createState() => _MainState();
@@ -18,18 +19,32 @@ class Main extends StatefulWidget {
 class _MainState extends State<Main> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      builder: (context, child) {
-        return ScrollConfiguration(
-          behavior: const ScrollBehavior().copyWith(
-            overscroll: false, // Desativa o efeito de overscroll
-            scrollbars: false, // Desativa as barras de rolagem
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: Main.themeNotifier,
+      builder: (_, ThemeMode currentMode, __) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            brightness: Brightness.light,
+            colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF005DAC), brightness: Brightness.light),
           ),
-          child: child!,
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF64B5F6), brightness: Brightness.dark),
+          ),
+          themeMode: currentMode,
+          builder: (context, child) {
+            return ScrollConfiguration(
+              behavior: const ScrollBehavior().copyWith(
+                overscroll: false, // Desativa o efeito de overscroll
+                scrollbars: false, // Desativa as barras de rolagem
+              ),
+              child: child!,
+            );
+          },
+          home: HomePage(),
         );
       },
-      home: HomePage(),
     );
   }
 }

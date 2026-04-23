@@ -149,7 +149,7 @@ class _LocationPageState extends State<LocationPage> {
                 child: Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF), // surface-container-lowest
+                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(32), // rounded-[2rem]
                     boxShadow: [
                       BoxShadow(
@@ -165,7 +165,7 @@ class _LocationPageState extends State<LocationPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             'Hourly Forecast',
                             style: TextStyle(
                               fontSize: 18,
@@ -246,6 +246,7 @@ class _LocationPageState extends State<LocationPage> {
                 childAspectRatio: 1.1, // Mantém o formato retangular dos cards
                 children: [
                   _buildMetricCard(
+                    context,
                     'UV INDEX',
                     w.uvIndex.toString(),
                     uvLevel,
@@ -254,6 +255,7 @@ class _LocationPageState extends State<LocationPage> {
                     barProgress: uvProgress,
                   ),
                   _buildMetricCard(
+                    context,
                     'SUNSET',
                     sunsetTime,
                     sunriseTime,
@@ -261,12 +263,14 @@ class _LocationPageState extends State<LocationPage> {
                     hasSunLine: true,
                   ),
                   _buildMetricCard(
+                    context,
                     'HUMIDITY',
                     '${w.humidity}%',
                     'Current Humidity',
                     Icons.percent_sharp,
                   ),
                   _buildMetricCard(
+                    context,
                     'PRESSURE',
                     '${w.pressure}',
                     'hPa',
@@ -284,7 +288,7 @@ class _LocationPageState extends State<LocationPage> {
               child: Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFFFFF), // surface-container-lowest
+                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
                   borderRadius: BorderRadius.circular(32), // rounded-[2rem]
                   boxShadow: [
                     BoxShadow(
@@ -297,7 +301,7 @@ class _LocationPageState extends State<LocationPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       '5-Day Forecast',
                       style: TextStyle(
                         fontSize: 18,
@@ -460,6 +464,7 @@ Widget _buildHourlyItem(BuildContext context, String time,
 }
 
 Widget _buildMetricCard(
+  BuildContext context,
   String title,
   String value,
   String subtitle,
@@ -484,7 +489,7 @@ Widget _buildMetricCard(
             const SizedBox(width: 8),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.onSurfaceVariant,

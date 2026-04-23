@@ -91,12 +91,18 @@ class WeatherService {
       locationSettings: locationSettings,
     );
 
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
+    List<Placemark> placemarks = [];
+    try {
+      placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+    } catch (e) {
+      logger.e("Geocoding error: $e");
+      return "London";
+    }
 
-    if (placemarks.isEmpty) return "";
+    if (placemarks.isEmpty) return "London";
 
     logger.i("Coordenadas: ${position.latitude}, ${position.longitude}");
     logger.i("Placemark encontrado: ${placemarks.first.toString()}");
