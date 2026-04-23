@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:atmospheric/services/weather_service.dart';
 import 'package:atmospheric/models/weather.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SearchPage extends StatefulWidget {
   final Function(String)? onCitySelected;
@@ -35,7 +36,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _fetchRecentWeather(List<String> searches) async {
-    final w = WeatherService('');
+    final w = WeatherService(dotenv.env['API_KEY'] ?? '');
     for (var city in searches) {
       try {
         final weather = await w.getWeather(city);
@@ -83,7 +84,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> _useCurrentLocation() async {
     try {
-      final w = WeatherService(''); // Env key handled natively up stream, but getCurrentCity doesn't need key
+      final w = WeatherService(dotenv.env['API_KEY'] ?? ''); // Env key handled natively up stream, but getCurrentCity doesn't need key
       final currentCity = await w.getCurrentCity();
       if (currentCity.isNotEmpty) {
         _submitSearch(currentCity);
@@ -218,8 +219,8 @@ class _SearchPageState extends State<SearchPage> {
                         : Column(
                             children: _recentSearches.map((city) {
                               final w = _recentWeather[city];
-                              final temp = w != null ? '${w.temperature.round()}°' : '--°';
-                              final status = w != null ? w.mainCondition : 'Unknown';
+                              final temp = w != null ? '${w.temperature.round()}°' : '';
+                              final status = w != null ? w.mainCondition : '';
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 12.0),
                                 child: InkWell(
