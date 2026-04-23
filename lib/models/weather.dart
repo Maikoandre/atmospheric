@@ -15,6 +15,8 @@ class Weather {
   final int sunrise;
   final int sunset;
   final int aqi;
+  final double lat;
+  final double lon;
 
   Weather({
     required this.cityName,
@@ -30,6 +32,8 @@ class Weather {
     this.sunrise = 0,
     this.sunset = 0,
     this.aqi = 0,
+    this.lat = 0.0,
+    this.lon = 0.0,
   });
 
   factory Weather.fromJson(Map<String, dynamic> json, {String cityName = ''}) {
@@ -90,6 +94,8 @@ class Weather {
         sunrise: json['current']['sunrise']?.toInt() ?? 0,
         sunset: json['current']['sunset']?.toInt() ?? 0,
         aqi: json['aqi']?.toInt() ?? 0,
+        lat: json['lat']?.toDouble() ?? 0.0,
+        lon: json['lon']?.toDouble() ?? 0.0,
       );
     } else {
       // Fallback to standard 2.5/weather API structure
@@ -107,6 +113,8 @@ class Weather {
         sunrise: json['sys']?['sunrise']?.toInt() ?? 0,
         sunset: json['sys']?['sunset']?.toInt() ?? 0,
         aqi: json['aqi']?.toInt() ?? 0,
+        lat: json['coord']?['lat']?.toDouble() ?? 0.0,
+        lon: json['coord']?['lon']?.toDouble() ?? 0.0,
       );
     }
   }

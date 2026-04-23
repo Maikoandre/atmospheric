@@ -21,7 +21,7 @@ void main() async {
   final lon = -94.04;
   
   final wRes = await http.get(Uri.parse('https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$apiKey'));
-  print('Weather: ${wRes.statusCode} - ${wRes.body.length > 50 ? wRes.body.substring(0, 50) + "..." : wRes.body}');
+  print('Weather: ${wRes.statusCode} - ${wRes.body.length > 50 ? "${wRes.body.substring(0, 50)}..." : wRes.body}');
   
   final ocRes = await http.get(Uri.parse('https://api.openweathermap.org/data/2.5/onecall?lat=$lat&lon=$lon&appid=$apiKey'));
   print('OneCall 2.5: ${ocRes.statusCode} - ${ocRes.body}');
@@ -30,7 +30,7 @@ void main() async {
   print('OneCall 3.0: ${oc3Res.statusCode} - ${oc3Res.body}');
 
   final apRes = await http.get(Uri.parse('https://api.openweathermap.org/data/2.5/air_pollution?lat=$lat&lon=$lon&appid=$apiKey'));
-  print('Air Pollution: ${apRes.statusCode} - ${apRes.body.length > 50 ? apRes.body.substring(0, 50) + "..." : apRes.body}');
+  print('Air Pollution: ${apRes.statusCode} - ${apRes.body.length > 50 ? "${apRes.body.substring(0, 50)}..." : apRes.body}');
 
   final uvRes = await http.get(Uri.parse('https://api.openweathermap.org/data/2.5/uvi?lat=$lat&lon=$lon&appid=$apiKey'));
   print('UV Index: ${uvRes.statusCode} - ${uvRes.body}');

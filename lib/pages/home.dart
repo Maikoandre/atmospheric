@@ -114,7 +114,7 @@ IconData _getWeatherIcon(String mainCondition) {
   }
 }
 
-Widget _buildBentoCard(
+Widget _buildBentoCard(BuildContext context, BuildContext context, 
   String title,
   String value,
   String description,
@@ -123,7 +123,7 @@ Widget _buildBentoCard(
   return Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: const Color(0xFFF2F3FC),
+      color: Theme.of(context).colorScheme.surfaceContainer,
       borderRadius: BorderRadius.circular(20),
     ),
     child: Column(
@@ -132,14 +132,14 @@ Widget _buildBentoCard(
       children: [
         Row(
           children: [
-            Icon(icon, size: 25, color: Colors.black54),
+            Icon(icon, size: 25, color: Theme.of(context).colorScheme.onSurfaceVariant),
             const SizedBox(width: 8),
             Text(
               title,
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: Colors.black54,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -150,7 +150,7 @@ Widget _buildBentoCard(
         ),
         Text(
           description,
-          style: const TextStyle(fontSize: 10, color: Colors.black54),
+          style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant),
           maxLines: 2,
         ),
       ],
@@ -158,14 +158,14 @@ Widget _buildBentoCard(
   );
 }
 
-Widget _buildHourlyCard(String time, IconData icon, String temp) {
+Widget _buildHourlyCard(BuildContext context, String time, IconData icon, String temp) {
   return Container(
     width: 67,
     margin: const EdgeInsets.symmetric(horizontal: 8.0),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(50),
-      border: Border.all(color: Colors.black),
+      border: Border.all(color: Theme.of(context).colorScheme.onSurface),
       boxShadow: [
         BoxShadow(
           color: Colors.white.withValues(alpha: 0.2),
@@ -202,8 +202,7 @@ Widget _buildHourlyCard(String time, IconData icon, String temp) {
   );
 }
 
-Widget _buildDailyCard(
-  String day,
+Widget _buildDailyCard(BuildContext context, String day,
   IconData icon,
   int low,
   int high,
@@ -219,7 +218,7 @@ Widget _buildDailyCard(
           width: 50,
           child: Text(
             day,
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
           ),
         ),
         Icon(icon, color: Colors.blue),
@@ -228,7 +227,7 @@ Widget _buildDailyCard(
             Text(
               '$low°',
               style: TextStyle(
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -237,7 +236,7 @@ Widget _buildDailyCard(
               width: 60,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.black12,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(2),
               ),
               child: Stack(
@@ -261,7 +260,7 @@ Widget _buildDailyCard(
               '$high°',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -367,25 +366,25 @@ class DashboardView extends StatelessWidget {
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               children: [
-                _buildBentoCard(
+                _buildBentoCard(context, 
                   'HUMIDITY',
                   weather != null ? '${weather!.humidity}%' : '--%',
                   'Current relative humidity',
                   Icons.water_drop_outlined,
                 ),
-                _buildBentoCard(
+                _buildBentoCard(context, 
                   'WIND',
                   weather != null ? '${weather!.windSpeed} km/h' : '-- km/h',
                   'Current wind speed',
                   Icons.air,
                 ),
-                _buildBentoCard(
+                _buildBentoCard(context, 
                   'PRESSURE',
                   weather != null ? '${weather!.pressure} hPa' : '-- hPa',
                   'Atmospheric pressure',
                   Icons.speed,
                 ),
-                _buildBentoCard(
+                _buildBentoCard(context, 
                   'VISIBILITY',
                   weather != null ? "${(weather!.visibility / 1000).toStringAsFixed(0)} km" : '-- km',
                   'Current visibility',
@@ -444,8 +443,7 @@ class DashboardView extends StatelessWidget {
                         itemBuilder: (context, index) {
                           HourlyForecast forecast = weather!.hourly[index];
                           String timeStr = index == 0 ? 'Now' : _formatTime(forecast.dt);
-                          return _buildHourlyCard(
-                            timeStr, 
+                          return _buildHourlyCard(context, timeStr, 
                             _getWeatherIcon(forecast.mainCondition), 
                             '${forecast.temp.round()}°'
                           );
@@ -455,7 +453,7 @@ class DashboardView extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         children: [
-                          _buildHourlyCard('Now', Icons.wb_cloudy, '--°'),
+                          _buildHourlyCard(context, 'Now', Icons.wb_cloudy, '--°'),
                         ],
                       ),
               ),
@@ -466,7 +464,7 @@ class DashboardView extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(24.0),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF2F3FC),
+                    color: Theme.of(context).colorScheme.surfaceContainer,
                     borderRadius: BorderRadius.circular(32.0),
                   ),
                   child: Column(
@@ -474,10 +472,8 @@ class DashboardView extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
-                            Icons.calendar_month,
-                            size: 18,
-                            color: Colors.black,
+                          Icon(
+                            Icons.calendar_month, size: 18, color: Theme.of(context).colorScheme.onSurface,
                           ),
                           const SizedBox(width: 8.0),
                           Text(
@@ -485,13 +481,13 @@ class DashboardView extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black.withValues(alpha: 0.5),
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                               letterSpacing: 1.2,
                             ),
                           ),
                         ],
                       ),
-                      const Divider(height: 32, color: Colors.black12),
+                      const Divider(height: 32, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12)),
                       if (weather != null && weather!.daily.isNotEmpty)
                         Builder(
                           builder: (context) {
@@ -504,8 +500,7 @@ class DashboardView extends StatelessWidget {
                               children: weather!.daily.map((dailyData) {
                                 double start = (dailyData.minTemp - absMin) / range;
                                 double end = (dailyData.maxTemp - absMin) / range;
-                                return _buildDailyCard(
-                                  _formatDay(dailyData.dt),
+                                return _buildDailyCard(context, _formatDay(dailyData.dt),
                                   _getWeatherIcon(dailyData.mainCondition),
                                   dailyData.minTemp.round(),
                                   dailyData.maxTemp.round(),
@@ -517,7 +512,7 @@ class DashboardView extends StatelessWidget {
                           },
                         )
                       else
-                        const Center(child: Text('--')),
+                        Center(child: Text('--')),
                     ],
                   ),
                 ),

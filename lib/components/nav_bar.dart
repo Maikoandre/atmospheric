@@ -28,7 +28,7 @@ class CustomNavbar extends StatelessWidget {
             ),
             child: Icon(
               icon,
-              color: isActive ? const Color(0xFF005DAC) : Colors.black45,
+              color: isActive ? const Color(0xFF005DAC) : Theme.of(context).colorScheme.onSurface45,
             ),
           ),
           const SizedBox(height: 4),
@@ -37,7 +37,7 @@ class CustomNavbar extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w500,
-              color: isActive ? const Color(0xFF005DAC) : Colors.black45,
+              color: isActive ? const Color(0xFF005DAC) : Theme.of(context).colorScheme.onSurface45,
             ),
           ),
         ],

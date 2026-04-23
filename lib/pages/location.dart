@@ -75,7 +75,7 @@ class _LocationPageState extends State<LocationPage> {
                 right: 24,
               ),
               width: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 // Replicando o gradiente do seu CSS (.glass-header)
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -153,7 +153,7 @@ class _LocationPageState extends State<LocationPage> {
                     borderRadius: BorderRadius.circular(32), // rounded-[2rem]
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -170,15 +170,13 @@ class _LocationPageState extends State<LocationPage> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF181C21), // on-surface
+                              color: Theme.of(context).colorScheme.onSurface, // on-surface
                             ),
                           ),
                           Row(
                             children: [
-                              const Icon(
-                                Icons.schedule,
-                                size: 14,
-                                color: Color(0xFF414752),
+                              Icon(
+                                Icons.schedule, size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 4),
                               Text(
@@ -219,8 +217,7 @@ class _LocationPageState extends State<LocationPage> {
                             } else if (h.mainCondition.toLowerCase() == 'rain') icon = Icons.umbrella;
                             else if (h.mainCondition.toLowerCase() == 'clouds') icon = Icons.wb_cloudy;
                             
-                            return _buildHourlyItem(
-                              timeStr,
+                            return _buildHourlyItem(context, timeStr,
                               icon,
                               '${h.temp.round()}°',
                               isSunny: isSunny,
@@ -291,7 +288,7 @@ class _LocationPageState extends State<LocationPage> {
                   borderRadius: BorderRadius.circular(32), // rounded-[2rem]
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha(51),
+                      color: Theme.of(context).colorScheme.onSurface.withAlpha(51),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -305,7 +302,7 @@ class _LocationPageState extends State<LocationPage> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF181C21),
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -337,8 +334,7 @@ class _LocationPageState extends State<LocationPage> {
                         double start = (d.minTemp - absMin) / range;
                         double end = (d.maxTemp - absMin) / range;
 
-                        return _buildForecastRow(
-                          dayStr,
+                        return _buildForecastRow(context, dayStr,
                           icon,
                           d.maxTemp.round(),
                           d.minTemp.round(),
@@ -361,7 +357,7 @@ class _LocationPageState extends State<LocationPage> {
               child: Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF2F3FC), // surface-container-low
+                  color: Theme.of(context).colorScheme.surfaceContainer, // surface-container-low
                   borderRadius: BorderRadius.circular(32),
                 ),
                 child: Column(
@@ -369,10 +365,8 @@ class _LocationPageState extends State<LocationPage> {
                   children: [
                     Row(
                       children: [
-                        const Icon(
-                          Icons.air,
-                          size: 14,
-                          color: Color(0xFF414752),
+                        Icon(
+                          Icons.air, size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                         const SizedBox(width: 8),
                         const Text(
@@ -396,9 +390,7 @@ class _LocationPageState extends State<LocationPage> {
                     const SizedBox(height: 8),
                     Text(
                       aqiDesc,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF414752),
+                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant,
                         height: 1.4,
                       ),
                     ),
@@ -408,7 +400,7 @@ class _LocationPageState extends State<LocationPage> {
                       height: 8,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Colors.black12,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: FractionallySizedBox(
@@ -436,8 +428,7 @@ class _LocationPageState extends State<LocationPage> {
   }
 }
 
-Widget _buildHourlyItem(
-  String time,
+Widget _buildHourlyItem(BuildContext context, String time,
   IconData icon,
   String temp, {
   bool isSunny = false,
@@ -448,7 +439,7 @@ Widget _buildHourlyItem(
       children: [
         Text(
           time,
-          style: const TextStyle(fontSize: 12, color: Color(0xFF414752)),
+          style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
         const SizedBox(height: 12),
         Icon(
@@ -480,7 +471,7 @@ Widget _buildMetricCard(
   return Container(
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
-      color: const Color(0xFFF2F3FC), // surface-container-low
+      color: Theme.of(context).colorScheme.surfaceContainer, // surface-container-low
       borderRadius: BorderRadius.circular(24), // rounded-[1.5rem]
     ),
     child: Column(
@@ -489,14 +480,14 @@ Widget _buildMetricCard(
       children: [
         Row(
           children: [
-            Icon(icon, size: 14, color: const Color(0xFF414752)),
+            Icon(icon, size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
             const SizedBox(width: 8),
             Text(
               title,
               style: const TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF414752),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 letterSpacing: 1.0,
               ),
             ),
@@ -511,7 +502,7 @@ Widget _buildMetricCard(
             ),
             Text(
               subtitle,
-              style: const TextStyle(fontSize: 12, color: Color(0xFF414752)),
+              style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ],
         ),
@@ -521,7 +512,7 @@ Widget _buildMetricCard(
             height: 4,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.black12,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(2),
             ),
             child: FractionallySizedBox(
@@ -548,7 +539,7 @@ Widget _buildMetricCard(
   );
 }
 
-Widget _buildForecastRow(String day, IconData icon, int high, int low, double start, double end, Color color) {
+Widget _buildForecastRow(BuildContext context, String day, IconData icon, int high, int low, double start, double end, Color color) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 12.0),
     child: Row(
@@ -566,7 +557,7 @@ Widget _buildForecastRow(String day, IconData icon, int high, int low, double st
             child: Container(
               height: 6,
               decoration: BoxDecoration(
-                color: const Color(0xFFECEDF6), // surface-container
+                color: Theme.of(context).colorScheme.surfaceContainerHighest, // surface-container
                 borderRadius: BorderRadius.circular(3),
               ),
               child: Stack(
@@ -591,7 +582,7 @@ Widget _buildForecastRow(String day, IconData icon, int high, int low, double st
           children: [
             Text('$high°', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
             const SizedBox(width: 8),
-            Text('$low°', style: const TextStyle(color: Color(0xFF414752), fontSize: 14)),
+            Text('$low°', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 14)),
           ],
         ),
       ],
