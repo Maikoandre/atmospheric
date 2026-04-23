@@ -50,15 +50,19 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const SizedBox(height: 32),
             _buildSectionHeader('UNITS'),
-            _buildUnitSelector(context, 'Temperature', [
-              'Celsius (°C)',
-              'Fahrenheit (°F)',
-            ]),
+            _buildUnitSelector(
+              context,
+              'Temperature',
+              ['Celsius (°C)', 'Fahrenheit (°F)'],
+              notifier: Main.isCelsiusNotifier,
+            ),
             const SizedBox(height: 12),
-            _buildUnitSelector(context, 'Distance & Wind', [
-              'Metric (km/h)',
-              'Imperial (mph)',
-            ]),
+            _buildUnitSelector(
+              context,
+              'Distance & Wind',
+              ['Metric (km/h)', 'Imperial (mph)'],
+              notifier: Main.isMetricNotifier,
+            ),
             // --- SEÇÃO NOTIFICATIONS ---
             const SizedBox(height: 32),
             _buildSectionHeader('NOTIFICATIONS'),
@@ -186,7 +190,7 @@ Widget _buildSectionHeader(String title) {
   );
 }
 
-Widget _buildUnitSelector(BuildContext context, String title, List<String> options) {
+Widget _buildUnitSelector(BuildContext context, String title, List<String> options, {ValueNotifier<bool>? notifier}) {
   return Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
@@ -204,46 +208,75 @@ Widget _buildUnitSelector(BuildContext context, String title, List<String> optio
           ],
         ),
         const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest, // surface-variant
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12), blurRadius: 4),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      options[0],
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
+        ValueListenableBuilder<bool>(
+          valueListenable: notifier ?? ValueNotifier(true),
+          builder: (context, isFirstOption, _) {
+            return Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest, // surface-variant
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        if (notifier != null) notifier.value = true;
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          color: isFirstOption ? Theme.of(context).colorScheme.surfaceContainer : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: isFirstOption ? [
+                            BoxShadow(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12), blurRadius: 4),
+                          ] : [],
+                        ),
+                        child: Center(
+                          child: Text(
+                            options[0],
+                            style: TextStyle(
+                              fontWeight: isFirstOption ? FontWeight.bold : FontWeight.normal,
+                              color: isFirstOption ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurfaceVariant,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    options[1],
-                    style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        if (notifier != null) notifier.value = false;
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          color: !isFirstOption ? Theme.of(context).colorScheme.surfaceContainer : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: !isFirstOption ? [
+                            BoxShadow(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12), blurRadius: 4),
+                          ] : [],
+                        ),
+                        child: Center(
+                          child: Text(
+                            options[1],
+                            style: TextStyle(
+                              fontWeight: !isFirstOption ? FontWeight.bold : FontWeight.normal,
+                              color: !isFirstOption ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurfaceVariant,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            );
+          }
         ),
       ],
     ),

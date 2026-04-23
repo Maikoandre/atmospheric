@@ -9,6 +9,7 @@ import 'package:atmospheric/services/weather_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:atmospheric/main.dart';
 
 final logger = Logger();
 
@@ -204,8 +205,8 @@ Widget _buildHourlyCard(BuildContext context, String time, IconData icon, String
 
 Widget _buildDailyCard(BuildContext context, String day,
   IconData icon,
-  int low,
-  int high,
+  String low,
+  String high,
   double start,
   double end,
 ) {
@@ -225,7 +226,7 @@ Widget _buildDailyCard(BuildContext context, String day,
         Row(
           children: [
             Text(
-              '$low°',
+              low,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
@@ -257,7 +258,7 @@ Widget _buildDailyCard(BuildContext context, String day,
             ),
             SizedBox(width: 8),
             Text(
-              '$high°',
+              high,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.onSurface,
@@ -316,7 +317,7 @@ class DashboardView extends StatelessWidget {
                     children: [
                       Text(
                         weather != null
-                            ? '${weather!.temperature.round()}°'
+                            ? '${Main.formatTemp(weather!.temperature)}'
                             : '--°',
                         style: const TextStyle(
                           color: Colors.white,
@@ -374,7 +375,7 @@ class DashboardView extends StatelessWidget {
                 ),
                 _buildBentoCard(context, 
                   'WIND',
-                  weather != null ? '${weather!.windSpeed} km/h' : '-- km/h',
+                  weather != null ? Main.formatWindSpeed(weather!.windSpeed) : '-- km/h',
                   'Current wind speed',
                   Icons.air,
                 ),
@@ -386,7 +387,7 @@ class DashboardView extends StatelessWidget {
                 ),
                 _buildBentoCard(context, 
                   'VISIBILITY',
-                  weather != null ? "${(weather!.visibility / 1000).toStringAsFixed(0)} km" : '-- km',
+                  weather != null ? Main.formatVisibility(weather!.visibility) : '-- km',
                   'Current visibility',
                   Icons.visibility,
                 ),
@@ -445,7 +446,7 @@ class DashboardView extends StatelessWidget {
                           String timeStr = index == 0 ? 'Now' : _formatTime(forecast.dt);
                           return _buildHourlyCard(context, timeStr, 
                             _getWeatherIcon(forecast.mainCondition), 
-                            '${forecast.temp.round()}°'
+                            '${Main.formatTemp(forecast.temp)}'
                           );
                         },
                       )
@@ -502,8 +503,8 @@ class DashboardView extends StatelessWidget {
                                 double end = (dailyData.maxTemp - absMin) / range;
                                 return _buildDailyCard(context, _formatDay(dailyData.dt),
                                   _getWeatherIcon(dailyData.mainCondition),
-                                  dailyData.minTemp.round(),
-                                  dailyData.maxTemp.round(),
+                                  Main.formatTemp(dailyData.minTemp),
+                                  Main.formatTemp(dailyData.maxTemp),
                                   start,
                                   end,
                                 );

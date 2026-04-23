@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:atmospheric/main.dart';
 import \'package:atmospheric/theme/app_colors.dart\';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -83,7 +84,7 @@ class _MapPageState extends State<MapPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        '${w.temperature.round()}°',
+                        '${Main.formatTemp(w.temperature)}',
                         style: TextStyle(color: AppColors.surface(context),
                           fontWeight: FontWeight.bold,
                           fontSize: 12,

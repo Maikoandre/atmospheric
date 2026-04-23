@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:atmospheric/main.dart';
 import 'package:atmospheric/models/weather.dart';
 
 class LocationPage extends StatefulWidget {
@@ -18,8 +19,8 @@ class _LocationPageState extends State<LocationPage> {
     final w = widget.weather!;
     String highTemp = '--', lowTemp = '--';
     if (w.daily.isNotEmpty) {
-      highTemp = '${w.daily.first.maxTemp.round()}°';
-      lowTemp = '${w.daily.first.minTemp.round()}°';
+      highTemp = '${Main.formatTemp(w.daily.first.maxTemp)}';
+      lowTemp = '${Main.formatTemp(w.daily.first.minTemp)}';
     }
 
     String sunsetTime = '--';
@@ -116,7 +117,7 @@ class _LocationPageState extends State<LocationPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${w.temperature.round()}',
+                        '${Main.formatTemp(w.temperature).replaceAll('°', '')}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 112, // Tamanho aproximado do 7rem
@@ -219,7 +220,7 @@ class _LocationPageState extends State<LocationPage> {
                             
                             return _buildHourlyItem(context, timeStr,
                               icon,
-                              '${h.temp.round()}°',
+                              '${Main.formatTemp(h.temp)}',
                               isSunny: isSunny,
                             );
                           }).toList(),
@@ -340,8 +341,8 @@ class _LocationPageState extends State<LocationPage> {
 
                         return _buildForecastRow(context, dayStr,
                           icon,
-                          d.maxTemp.round(),
-                          d.minTemp.round(),
+                          Main.formatTemp(d.maxTemp),
+                          Main.formatTemp(d.minTemp),
                           start,
                           end,
                           color,
@@ -544,7 +545,7 @@ Widget _buildMetricCard(
   );
 }
 
-Widget _buildForecastRow(BuildContext context, String day, IconData icon, int high, int low, double start, double end, Color color) {
+Widget _buildForecastRow(BuildContext context, String day, IconData icon, String high, String low, double start, double end, Color color) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 12.0),
     child: Row(
@@ -585,9 +586,9 @@ Widget _buildForecastRow(BuildContext context, String day, IconData icon, int hi
         ),
         Row(
           children: [
-            Text('$high°', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            Text(high, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
             const SizedBox(width: 8),
-            Text('$low°', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 14)),
+            Text(low, style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 14)),
           ],
         ),
       ],

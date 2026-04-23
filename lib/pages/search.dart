@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:atmospheric/main.dart';
 import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:atmospheric/services/weather_service.dart';
@@ -217,7 +218,7 @@ class _SearchPageState extends State<SearchPage> {
                         : Column(
                             children: _recentSearches.map((city) {
                               final w = _recentWeather[city];
-                              final temp = w != null ? '${w.temperature.round()}°' : '';
+                              final temp = w != null ? '${Main.formatTemp(w.temperature)}' : '';
                               final status = w != null ? w.mainCondition : '';
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 12.0),
