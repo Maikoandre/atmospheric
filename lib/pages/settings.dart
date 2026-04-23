@@ -83,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     trailing: Switch(
                       value: true,
                       onChanged: (v) {},
-                      activeThumbColor: const Color(0xFF005DAC),
+                      activeThumbColor: Colors.blueAccent,
                     ),
                   ),
                   Divider(
@@ -183,7 +183,7 @@ Widget _buildSectionHeader(String title) {
       style: const TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.bold,
-        color: Color(0xFF005DAC), // primary
+        color: Colors.blueAccent, // primary
         letterSpacing: 1.5,
       ),
     ),
@@ -202,7 +202,7 @@ Widget _buildUnitSelector(BuildContext context, String title, List<String> optio
       children: [
         Row(
           children: [
-            const Icon(Icons.straighten, size: 20, color: Color(0xFF005DAC)),
+            const Icon(Icons.straighten, size: 20, color: Colors.blueAccent),
             const SizedBox(width: 12),
             Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
@@ -301,7 +301,7 @@ Widget _buildSettingTile(
         color: iconBgColor ?? const Color(0xFF95CFFF).withValues(alpha: 0.3), // secondary-container
         shape: BoxShape.circle,
       ),
-      child: Icon(icon, color: iconColor ?? const Color(0xFF005DAC), size: 20),
+      child: Icon(icon, color: iconColor ?? Colors.blueAccent, size: 20),
     ),
     title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
     subtitle: Text(subtitle, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),

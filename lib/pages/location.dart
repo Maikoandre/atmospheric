@@ -82,7 +82,7 @@ class _LocationPageState extends State<LocationPage> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFF005DAC), // primary
+                    Colors.blueAccent, // primary
                     Color(0xFF1976D2), // primary-container
                   ],
                 ),
@@ -332,8 +332,8 @@ class _LocationPageState extends State<LocationPage> {
                         
                         IconData icon = Icons.cloud;
                         Color color = Colors.blueGrey;
-                        if (d.mainCondition.toLowerCase() == 'clear') { icon = Icons.wb_sunny; color = Colors.blue; }
-                        else if (d.mainCondition.toLowerCase() == 'rain') { icon = Icons.umbrella; color = Colors.blue; }
+                        if (d.mainCondition.toLowerCase() == 'clear') { icon = Icons.wb_sunny; color = Colors.lightBlue; }
+                        else if (d.mainCondition.toLowerCase() == 'rain') { icon = Icons.umbrella; color = Colors.lightBlue; }
                         else if (d.mainCondition.toLowerCase() == 'clouds') { icon = Icons.wb_cloudy; color = Colors.blueGrey; }
                         
                         double start = (d.minTemp - absMin) / range;
@@ -413,7 +413,7 @@ class _LocationPageState extends State<LocationPage> {
                         widthFactor: ((6 - w.aqi) / 5.0).clamp(0.0, 1.0),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFF005DAC),
+                            color: Colors.blueAccent,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -450,7 +450,7 @@ Widget _buildHourlyItem(BuildContext context, String time,
         Icon(
           icon,
           color: isSunny
-              ? const Color(0xFF005DAC)
+              ? Colors.blueAccent
               : const Color(0xFF95CFFF), // primary vs secondary-container
           size: 24,
         ),
@@ -574,7 +574,7 @@ Widget _buildForecastRow(BuildContext context, String day, IconData icon, String
                     child: Container(
                       height: 6,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF005DAC),
+                        color: Colors.blueAccent,
                         borderRadius: BorderRadius.circular(3),
                       ),
                     ),

@@ -222,7 +222,7 @@ Widget _buildDailyCard(BuildContext context, String day,
             style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
           ),
         ),
-        Icon(icon, color: Colors.blue),
+        Icon(icon, color: Colors.lightBlue),
         Row(
           children: [
             Text(
@@ -248,7 +248,7 @@ Widget _buildDailyCard(BuildContext context, String day,
                     child: Container(
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Color(0xFF005DAC),
+                        color: Colors.blueAccent,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -354,6 +354,66 @@ class DashboardView extends StatelessWidget {
               ),
             ),
           ),
+          if (weather != null) ...[
+            const SizedBox(height: 16.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: weather!.alerts.isNotEmpty
+                      ? Theme.of(context).colorScheme.errorContainer
+                      : Theme.of(context).colorScheme.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(24.0),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      weather!.alerts.isNotEmpty
+                          ? Icons.warning_amber_rounded
+                          : Icons.check_circle_outline_rounded,
+                      color: weather!.alerts.isNotEmpty
+                          ? Theme.of(context).colorScheme.error
+                          : Theme.of(context).colorScheme.primary,
+                      size: 32,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            weather!.alerts.isNotEmpty
+                                ? weather!.alerts.first.event
+                                : 'No Active Alerts',
+                            style: TextStyle(
+                              color: weather!.alerts.isNotEmpty
+                                  ? Theme.of(context).colorScheme.onErrorContainer
+                                  : Theme.of(context).colorScheme.onSurface,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            weather!.alerts.isNotEmpty
+                                ? weather!.alerts.first.senderName
+                                : 'Conditions are safe and stable in your area.',
+                            style: TextStyle(
+                              color: weather!.alerts.isNotEmpty
+                                  ? Theme.of(context).colorScheme.onErrorContainer.withValues(alpha: 0.8)
+                                  : Theme.of(context).colorScheme.onSurfaceVariant,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 16.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),

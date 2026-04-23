@@ -1,5 +1,6 @@
 import 'daily_forecast.dart';
 import 'hourly_forecast.dart';
+import 'alert.dart';
 
 class Weather {
   final String cityName;
@@ -17,6 +18,7 @@ class Weather {
   final int aqi;
   final double lat;
   final double lon;
+  final List<Alert> alerts;
 
   Weather({
     required this.cityName,
@@ -34,12 +36,18 @@ class Weather {
     this.aqi = 0,
     this.lat = 0.0,
     this.lon = 0.0,
+    this.alerts = const [],
   });
 
   factory Weather.fromJson(Map<String, dynamic> json, {String cityName = ''}) {
     List<HourlyForecast> hourlyList = [];
     if (json['hourly'] != null) {
       hourlyList = (json['hourly'] as List).map((i) => HourlyForecast.fromJson(i)).toList();
+    }
+
+    List<Alert> alertList = [];
+    if (json['alerts'] != null) {
+      alertList = (json['alerts'] as List).map((i) => Alert.fromJson(i)).toList();
     }
 
     List<DailyForecast> dailyList = [];
@@ -96,6 +104,7 @@ class Weather {
         aqi: json['aqi']?.toInt() ?? 0,
         lat: json['lat']?.toDouble() ?? 0.0,
         lon: json['lon']?.toDouble() ?? 0.0,
+        alerts: alertList,
       );
     } else {
       // Fallback to standard 2.5/weather API structure
@@ -115,6 +124,7 @@ class Weather {
         aqi: json['aqi']?.toInt() ?? 0,
         lat: json['coord']?['lat']?.toDouble() ?? 0.0,
         lon: json['coord']?['lon']?.toDouble() ?? 0.0,
+        alerts: alertList,
       );
     }
   }

@@ -58,11 +58,11 @@ class _MainState extends State<Main> {
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
                 brightness: Brightness.light,
-                colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF005DAC), brightness: Brightness.light),
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent, brightness: Brightness.light),
               ),
               darkTheme: ThemeData(
                 brightness: Brightness.dark,
-                colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF64B5F6), brightness: Brightness.dark),
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue, brightness: Brightness.dark),
               ),
               themeMode: currentMode,
               builder: (context, child) {
