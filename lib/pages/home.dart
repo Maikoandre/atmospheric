@@ -222,7 +222,7 @@ Widget _buildDailyCard(BuildContext context, String day,
             style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
           ),
         ),
-        Icon(icon, color: Colors.lightBlue),
+        Icon(icon, color: Colors.blueAccent),
         Row(
           children: [
             Text(
@@ -291,7 +291,7 @@ class DashboardView extends StatelessWidget {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Colors.blueAccent, Colors.lightBlue],
+                  colors: [Colors.blueAccent, Colors.blueAccent],
                 ),
                 boxShadow: [
                   BoxShadow(

@@ -332,8 +332,8 @@ class _LocationPageState extends State<LocationPage> {
                         
                         IconData icon = Icons.cloud;
                         Color color = Colors.blueGrey;
-                        if (d.mainCondition.toLowerCase() == 'clear') { icon = Icons.wb_sunny; color = Colors.lightBlue; }
-                        else if (d.mainCondition.toLowerCase() == 'rain') { icon = Icons.umbrella; color = Colors.lightBlue; }
+                        if (d.mainCondition.toLowerCase() == 'clear') { icon = Icons.wb_sunny; color = Colors.blueAccent; }
+                        else if (d.mainCondition.toLowerCase() == 'rain') { icon = Icons.umbrella; color = Colors.blueAccent; }
                         else if (d.mainCondition.toLowerCase() == 'clouds') { icon = Icons.wb_cloudy; color = Colors.blueGrey; }
                         
                         double start = (d.minTemp - absMin) / range;

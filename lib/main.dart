@@ -62,7 +62,7 @@ class _MainState extends State<Main> {
               ),
               darkTheme: ThemeData(
                 brightness: Brightness.dark,
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue, brightness: Brightness.dark),
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent, brightness: Brightness.dark),
               ),
               themeMode: currentMode,
               builder: (context, child) {
