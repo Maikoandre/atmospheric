@@ -63,45 +63,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ['Metric (km/h)', 'Imperial (mph)'],
               notifier: Main.isMetricNotifier,
             ),
-            // --- SEÇÃO NOTIFICATIONS ---
-            const SizedBox(height: 32),
-            _buildSectionHeader('NOTIFICATIONS'),
-            Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                children: [
-                  _buildSettingTile(
-                    context,
-                    title: 'Severe Weather Alerts',
-                    subtitle: 'Immediate life-safety notifications',
-                    icon: Icons.warning_amber_rounded,
-                    iconBgColor: const Color(0xFFFFDAD6), // error-container
-                    iconColor: const Color(0xFFBA1A1A), // error
-                    trailing: Switch(
-                      value: true,
-                      onChanged: (v) {},
-                      activeThumbColor: Colors.blueAccent,
-                    ),
-                  ),
-                  Divider(
-                    height: 1,
-                    indent: 70,
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  ),
-                  _buildSettingTile(
-                    context,
-                    title: 'Daily Summary',
-                    subtitle: 'Morning briefing at 7:00 AM',
-                    icon: Icons.event_note,
-                    trailing: Switch(value: false, onChanged: (v) {}),
-                  ),
-                ],
-              ),
-            ),
-
             // --- SEÇÃO ABOUT ---
             const SizedBox(height: 32),
             _buildSectionHeader('ABOUT'),
@@ -110,13 +71,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 color: Theme.of(context).colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(20),
               ),
-              clipBehavior: Clip.antiAlias, // Garante que o efeito de clique respeite o arredondamento
+              clipBehavior: Clip.antiAlias,
               child: Column(
                 children: [
                   _buildAboutTile(
                     context,
                     'App Version',
-                    trailingText: 'v2.4.0 (Stable)',
+                    trailingText: 'v0.4.1 (Alpha)',
                     icon: Icons.info_outline,
                   ),
                   Divider(
@@ -161,7 +122,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'Refining Your Sky Since 2024',
+                      'Refining Your Sky Since 2026',
                       style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.26)),
                     ),
                   ],

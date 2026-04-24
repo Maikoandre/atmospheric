@@ -39,16 +39,15 @@ atmospheric/
 ├── android/            # Arquivos de projeto nativo Android
 ├── ios/                # Arquivos de projeto nativo iOS
 ├── web/                # Arquivos de aplicação Web
-├── assets/
-│   ├── images/         # Ativos estáticos locais
-│   └── .env            # Configuração de ambiente (Não rastreado pelo git)
+├── images/             # Ativos estáticos locais
 ├── lib/
 │   ├── components/     # Estruturas de widgets altamente reutilizáveis e isoladas
 │   ├── models/         # DTOs principais da aplicação mapeando JSON
 │   ├── pages/          # Pontos de entrada lógicos para o roteamento da aplicação
 │   ├── services/       # Abstrações para integração externa (HTTP, Geolocalização)
 │   └── main.dart       # Ponto de entrada e configuração de estado global
-└── pubspec.yaml        # Gerenciador de dependências do Flutter
+├── pubspec.yaml        # Gerenciador de dependências do Flutter
+└── .env 
 ```
 
 ### 🧠 Divisão da Lógica de Domínio

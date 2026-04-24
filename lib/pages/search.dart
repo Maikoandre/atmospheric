@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:atmospheric/services/weather_service.dart';
 import 'package:atmospheric/models/weather.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:atmospheric/pages/map.dart';
 
 class SearchPage extends StatefulWidget {
   final Function(String)? onCitySelected;
@@ -302,17 +303,27 @@ class _SearchPageState extends State<SearchPage> {
                   horizontal: 24.0,
                   vertical: 32.0,
                 ),
-                child: Container(
-                  height: 160, // Altura h-40 do seu HTML
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainer,
-                    borderRadius: BorderRadius.circular(32),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Stack(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MapPage(
+                          recentWeathers: _recentWeather.values.toList(),
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    height: 160,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Stack(
                     children: [
-                      // Imagem do Mapa em Tons de Cinza
                       Opacity(
                         opacity: 0.4,
                         child: ColorFiltered(
@@ -392,6 +403,7 @@ class _SearchPageState extends State<SearchPage> {
                     ],
                   ),
                 ),
+              ),
               ),
             ],
           ),
