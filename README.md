@@ -32,7 +32,7 @@ Projetado com princípios modernos de UI/UX, o Atmospheric apresenta *glassmorph
 
 ## 🏗️ Arquitetura e Estrutura do Projeto
 
-O projeto adere estritamente a um padrão de UI limpo e orientado a serviços, comum em ambientes Flutter altamente escaláveis. Ele reforça a separação de responsabilidades, dividindo o processamento algorítmico da renderização de widgets.
+O projeto adere ao padrão de arquitetura **MVVM (Model-View-ViewModel)**. Ele reforça a separação de responsabilidades, dividindo o processamento de dados da renderização de widgets.
 
 ```text
 atmospheric/
@@ -43,6 +43,7 @@ atmospheric/
 ├── lib/
 │   ├── components/     # Estruturas de widgets altamente reutilizáveis e isoladas
 │   ├── models/         # DTOs principais da aplicação mapeando JSON
+│   ├── viewmodels/     # Lógica de negócio e estado da UI (MVVM)
 │   ├── pages/          # Pontos de entrada lógicos para o roteamento da aplicação
 │   ├── services/       # Abstrações para integração externa (HTTP, Geolocalização)
 │   └── main.dart       # Ponto de entrada e configuração de estado global
@@ -53,9 +54,10 @@ atmospheric/
 ### 🧠 Divisão da Lógica de Domínio
 
 - **`lib/models/`**: Contém Objetos de Transferência de Dados (DTOs). Mapeamentos JSON complexos convertem respostas HTTP brutas em configurações tipadas prontas para injeção na interface. Inclui entidades como `Weather`, `HourlyForecast` e `DailyForecast`.
+- **`lib/viewmodels/`**: Implementa a lógica de negócio e gerencia o estado da interface utilizando `ChangeNotifier`. Faz a ponte entre os serviços e as páginas da UI.
 - **`lib/services/`**: Implementa o acesso seguro aos endpoints da API e acopla a lógica geográfica aos serviços de geolocalização do sistema operacional, mantendo a busca de dados abstraída do ciclo de vida da UI.
 - **`lib/components/`**: Abriga estruturas de layout autocontidas para evitar duplicação. Gerencia componentes globais como a AppBar base e a barra de navegação inferior dinâmica.
-- **`lib/pages/`**: As visualizações de rota principais que conectam o estado global com recursos modulares específicos.
+- **`lib/pages/`**: As visualizações de rota principais (Views) que escutam as mudanças no ViewModel para atualizar a tela.
 
 ---
 
