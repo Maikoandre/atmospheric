@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:atmospheric/main.dart';
-import \'package:atmospheric/theme/app_colors.dart\';
+import 'package:atmospheric/theme/app_colors.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:atmospheric/models/weather.dart';
@@ -45,13 +45,13 @@ class _MapPageState extends State<MapPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Mapa de Clima',
           style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.surface(context)),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.surface(context)),
+        iconTheme: IconThemeData(color: AppColors.surface(context)),
       ),
       body: FlutterMap(
         options: MapOptions(

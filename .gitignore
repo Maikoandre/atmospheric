@@ -18,6 +18,7 @@ web/
 macos/
 linux/
 ios/
+skills/
 
 # IntelliJ related
 *.iml
