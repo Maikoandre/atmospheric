@@ -5,7 +5,7 @@ import 'package:atmospheric/models/hourly_forecast.dart';
 import 'package:atmospheric/pages/location.dart';
 import 'package:atmospheric/pages/search.dart';
 import 'package:atmospheric/pages/settings.dart';
-import 'package:atmospheric/services/weather_service.dart';
+import 'package:atmospheric/viewmodels/weather_viewmodel.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
@@ -21,70 +21,42 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String apiKey = dotenv.env['API_KEY'] ?? '';
-
-  int _selectedIndex = 0;
-
-  List<Widget> get _pages => [
-    DashboardView(weather: _weather),
-    LocationPage(weather: _weather),
-    SearchPage(onCitySelected: _updateCity),
-    const SettingsPage(),
-  ];
-
-  final _weatherService = WeatherService(dotenv.env['API_KEY'] ?? '');
-  Weather? _weather;
-
-  Future<void> _fetchWeather() async {
-    try {
-      final weather = await _weatherService.getWeatherForCurrentLocation();
-      setState(() {
-        _weather = weather;
-        _selectedIndex = 0;
-      });
-    } catch (e) {
-      logger.e("Failed to fetch initial weather data: $e");
-    }
-  }
-
-  Future<void> _updateCity(String newCity) async {
-    if (newCity.isEmpty) return;
-    try {
-      if (newCity == '__CURRENT_LOCATION__') {
-        await _fetchWeather();
-        return;
-      }
-      final weather = await _weatherService.getWeather(newCity);
-      setState(() {
-        _weather = weather;
-        _selectedIndex = 0; // Swap to home dashboard automatically
-      });
-    } catch (e) {
-      logger.e("Failed to fetch weather data: $e");
-    }
-  }
+  late final WeatherViewModel _viewModel;
 
   @override
   void initState() {
     super.initState();
-    _fetchWeather();
+    _viewModel = WeatherViewModel();
+    _viewModel.init();
   }
+
+  List<Widget> _pages(WeatherViewModel vm) => [
+    DashboardView(weather: vm.weather),
+    LocationPage(weather: vm.weather),
+    SearchPage(viewModel: vm),
+    const SettingsPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: _weather?.cityName ?? 'Atmospheric',
-      ),
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: CustomNavbar(
-        selectedIndex: _selectedIndex,
-        onItemSelected: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-      ),
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        return Scaffold(
+          appBar: CustomAppBar(
+            title: _viewModel.weather?.cityName ?? 'Atmospheric',
+          ),
+          body: _viewModel.isLoading 
+            ? const Center(child: CircularProgressIndicator())
+            : _pages(_viewModel)[_viewModel.selectedIndex],
+          bottomNavigationBar: CustomNavbar(
+            selectedIndex: _viewModel.selectedIndex,
+            onItemSelected: (index) {
+              _viewModel.selectedIndex = index;
+            },
+          ),
+        );
+      },
     );
   }
 }

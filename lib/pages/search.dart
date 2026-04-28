@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:atmospheric/main.dart';
 import 'dart:ui';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:atmospheric/services/weather_service.dart';
-import 'package:atmospheric/models/weather.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:atmospheric/pages/map.dart';
+import 'package:atmospheric/viewmodels/weather_viewmodel.dart';
 
 class SearchPage extends StatefulWidget {
-  final Function(String)? onCitySelected;
-  const SearchPage({super.key, this.onCitySelected});
+  final WeatherViewModel viewModel;
+  const SearchPage({super.key, required this.viewModel});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -17,92 +14,15 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
-  List<String> _recentSearches = [];
-  Map<String, Weather> _recentWeather = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _loadRecentSearches();
-  }
-
-  Future<void> _loadRecentSearches() async {
-    final prefs = await SharedPreferences.getInstance();
-    final searches = prefs.getStringList('recent_searches') ?? [];
-    if (mounted) {
-      setState(() {
-        _recentSearches = searches;
-      });
-    }
-    _fetchRecentWeather(searches);
-  }
-
-  Future<void> _fetchRecentWeather(List<String> searches) async {
-    final w = WeatherService(dotenv.env['API_KEY'] ?? '');
-    for (var city in searches) {
-      try {
-        final weather = await w.getWeather(city);
-        if (mounted) {
-          setState(() {
-            _recentWeather[city] = weather;
-          });
-        }
-      } catch (e) {
-        // Ignore failure for a specific recent city
-      }
-    }
-  }
-
-  Future<void> _saveRecentSearch(String city) async {
-    if (city.isEmpty) return;
-    final prefs = await SharedPreferences.getInstance();
-    List<String> searches = prefs.getStringList('recent_searches') ?? [];
-    
-    // Remove if exists to push it to the top
-    searches.removeWhere((s) => s.toLowerCase() == city.toLowerCase());
-    searches.insert(0, city);
-    
-    // Limit to 5 recent searches
-    if (searches.length > 5) {
-      searches = searches.sublist(0, 5);
-    }
-    
-    await prefs.setStringList('recent_searches', searches);
-    if (mounted) {
-      setState(() {
-        _recentSearches = searches;
-      });
-    }
-  }
 
   void _submitSearch(String city) {
     if (city.isNotEmpty) {
-      _saveRecentSearch(city);
-      if (widget.onCitySelected != null) {
-        widget.onCitySelected!(city);
-      }
+      widget.viewModel.updateCity(city);
     }
   }
 
-  Future<void> _useCurrentLocation() async {
-    try {
-      if (widget.onCitySelected != null) {
-        widget.onCitySelected!('__CURRENT_LOCATION__');
-      }
-    } catch (e) {
-      // ignore
-    }
-  }
-
-  Future<void> _clearRecentSearches() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('recent_searches');
-    if (mounted) {
-      setState(() {
-        _recentSearches = [];
-        _recentWeather.clear();
-      });
-    }
+  void _useCurrentLocation() {
+    widget.viewModel.fetchWeatherForCurrentLocation();
   }
 
   @override
@@ -110,6 +30,7 @@ class _SearchPageState extends State<SearchPage> {
     _searchController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +116,7 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                         ),
                         TextButton(
-                          onPressed: _clearRecentSearches,
+                          onPressed: widget.viewModel.clearRecentSearches,
                           child: Text(
                             'Clear all',
                             style: TextStyle(
@@ -212,11 +133,11 @@ class _SearchPageState extends State<SearchPage> {
                   // Lista de Itens Recentes
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: _recentSearches.isEmpty
+                    child: widget.viewModel.recentSearches.isEmpty
                         ? Text('No recent searches', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)))
                         : Column(
-                            children: _recentSearches.map((city) {
-                              final w = _recentWeather[city];
+                            children: widget.viewModel.recentSearches.map((city) {
+                              final w = widget.viewModel.recentWeather[city];
                               final temp = w != null ? '${Main.formatTemp(w.temperature)}' : '';
                               final status = w != null ? w.mainCondition : '';
                               return Padding(
@@ -309,7 +230,7 @@ class _SearchPageState extends State<SearchPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => MapPage(
-                          recentWeathers: _recentWeather.values.toList(),
+                          recentWeathers: widget.viewModel.recentWeather.values.toList(),
                         ),
                       ),
                     );
