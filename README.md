@@ -21,12 +21,14 @@ Projetado com princípios modernos de UI/UX, o Atmospheric apresenta *glassmorph
 ## ✨ Principais Recursos
 
 - **Telemetria Climática em Tempo Real:** Atualizações ao vivo sobre temperatura, umidade, velocidade do vento, pressão e visibilidade.
+- **Mapa Climático Interativo:** Visualização global avançada com suporte a camadas dinâmicas de Temperatura, Precipitação, Nuvens, Vento e Pressão Atmosférica.
 - **Slider Preditivo de Hora em Hora:** Linha do tempo fluida mapeando o clima para as próximas 24 horas.
 - **Previsão de 5 Dias Agregada:** Algoritmo de agregação inteligente que processa 40 pontos de dados individuais da API (a cada 3 horas) em extremos diários de mínima/máxima integrados.
 - **Integração de Localização e Geocodificação:** Busca nativamente coordenadas GPS do sistema e realiza geocodificação reversa para nomes de cidades legíveis por humanos.
 - **Layout Bento Grid:** Métricas climáticas importantes exibidas em um formato de grade moderno e de fácil digestão.
 - **Navegação com Preservação de Estado:** Utiliza uma abordagem de roteamento por pilha indexada para manter processos de fundo ativos enquanto alterna as visualizações sem interrupções.
 - **Segurança de Ambiente:** As chaves de API são protegidas através da integração segura com arquivos `.env`.
+
 
 ---
 
@@ -67,7 +69,7 @@ O Atmospheric implementa uma arquitetura de roteamento por pilha indexada (Index
 
 1. **`Home / Dashboard View`** (`lib/pages/home.dart`): O núcleo central que computa e renderiza a telemetria ao vivo. Exibe listas de rolagem horizontal de 24 horas e o gráfico de máximas/mínimas processado de 5 dias.
 2. **`Location View`** (`lib/pages/location.dart`): Espaço dedicado para métricas localizadas como Índice UV, pôr do sol, Qualidade do Ar (AQI) e previsões estendidas de 7 dias em um layout estético *glassmorphic*.
-3. **`Search View`** (`lib/pages/search.dart`): Interface suave para busca de locais globais, exibindo buscas recentes e sugestões populares sobre um mapa global em tons de cinza.
+3. **`Search View`** (`lib/pages/search.dart`): Interface suave para busca de locais globais, exibindo buscas recentes, sugestões populares e acesso rápido ao **Mapa Climático Interativo** ([lib/pages/map.dart](file:///home/maiko/Projects/atmospheric/lib/pages/map.dart)) com sobreposição de dados meteorológicos.
 4. **`Settings View`** (`lib/pages/settings.dart`): Dedicado às preferências do usuário. Inclui opções de gerenciamento de tema (Modo Escuro), troca de unidades (Métrico/Imperial), notificações e informações "Sobre".
 
 ---
@@ -102,10 +104,13 @@ O Atmospheric utiliza a **API OpenWeather** (Modo Gratuito), estruturada para mi
 ## 📦 Dependências Principais
 
 - `http`: Gerencia a camada REST para ingestão da API.
+- `flutter_map` & `latlong2`: Renderização cartográfica customizável e controle vetorial de dados de satélite.
 - `geolocator`: Rastreamento posicional dinâmico em tempo real conectado aos sensores GPS nativos.
 - `geocoding`: Converte coordenadas globais em nomes de regiões geográficas, resolvendo cidades e estados.
+- `shared_preferences`: Armazenamento assíncrono para o histórico persistente de buscas de cidades.
 - `flutter_dotenv`: Injetor seguro de tokens de ambiente para proteger as chaves de API.
 - `logger`: Gerenciamento profissional de logs no console para monitorar requisições e erros HTTP.
+
 
 ---
 
